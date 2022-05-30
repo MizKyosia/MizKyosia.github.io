@@ -1,0 +1,136 @@
+* {
+    transition: all .4s;
+    box-sizing: content-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	height: 100%;
+	background: linear-gradient(#2C2F33 0vh, black 100vh);
+	background-attachment: fixed;
+	color:white;
+	font-family: arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+p
+{
+	color: rgb(210,210,210);
+	font-size: 110%;
+	text-shadow: 1px 1px 5px black;
+	font-weight: bold;
+	font-family: calibri;
+	margin-left: 25px;
+	max-width: calc(100vw - 280px);
+	overflow-wrap: break-word;
+}
+
+h1
+{
+	font-size: 50px;
+	border: 2px solid orangered;
+	padding: 5px;
+	color: white;
+	margin-top: 50px;
+	margin-bottom: 15px;
+    align-self: center;
+    right: 10vw;
+}
+
+h2
+{
+	font-size: 25px;
+	color: orangered;
+    margin: 10px;
+}
+
+h3
+{
+	font-size: 25px;
+	color: white;
+    margin-left: 25px;
+}
+
+ol li ul li p
+{
+	margin-left: 40px;
+}
+
+ul
+{
+    list-style-type: none;
+}
+
+#menu
+{
+    position: fixed;
+    box-shadow: 1px 1px 1px black;
+    right: 10px;
+    padding: 20px;
+    top:30px;
+	background:rgb(60, 60, 60);
+	border-radius: 30px;
+}
+
+h6
+{
+    font-size: 20px;
+	color: orangered;
+    vertical-align: middle;
+}
+
+a
+{
+    color: rgb(210,210,210);
+	font-size: 110%;
+	font-weight: bold;
+	font-family: calibri;
+	text-decoration: underline orangered 2px;
+}
+
+#menu ul li a
+{
+	margin-left: 15px;
+}
+
+a:hover
+{
+    color: white;
+	text-shadow: none;
+}
+#piece_liste li a 
+{
+	text-decoration: none;
+}
+
+button
+{
+    background-color: transparent;
+    border: transparent;
+}
+
+button:hover
+{
+	cursor: pointer;
+}
+
+button img
+{
+    width: 30px;
+    transform: rotate(-90deg);
+}
+
+.open_image img
+{
+	transform: rotate(0deg);
+	width: auto;
+}
+
+.closed
+{
+    display: none;
+}

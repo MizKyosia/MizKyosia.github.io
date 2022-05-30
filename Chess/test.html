@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+        <style>
+            * {
+                transition: all .4s;
+            }
+
+            p
+            {
+                overflow-wrap: break-word;
+                overflow-y: hidden;
+                transition: all .4s;
+            }
+
+            #block
+            {
+                width: 150px;
+                background: orangered;
+            }
+
+            #clicked
+            {
+                transform: scaleY(20px);
+            }
+        </style>
+    </head>
+    <body>
+        <button onclick="document.getElementById('block').classList.add('clicked')= '20px'">click me lol</button>
+            <p id="block">
+                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+    </body>
+</html>
