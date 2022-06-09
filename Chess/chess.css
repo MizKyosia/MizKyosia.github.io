@@ -87,26 +87,18 @@ a
 	height: 50px;
 }
 
-img.arrows
-{
-	filter:brightness(50%);
-}
-
-img.arrows.allowed
-{
-	filter: brightness(100%);
-}
-
 button.arrows
 {
 	transition: all .2s;
 	cursor: not-allowed;
 	border: none;
+	filter:brightness(50%);
 }
 
 button.arrows.allowed
 {
 	cursor: pointer;
+	filter: brightness(100%);
 }
 
 button.arrows.allowed:hover
@@ -133,7 +125,7 @@ button.arrows.allowed:hover
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	z-index: 1;
+	z-index: 2;
 }
 
 .popup.appear
@@ -155,9 +147,9 @@ button.arrows.allowed:hover
 
 #open
 {
-	position:relative;
+	position:absolute;
 	background-color: transparent;
-	top: 31.2%;
+	top: calc(100vh - 50px);
 	width: 50px;
 	height: 150px;
 	transition: all .4s;
@@ -263,4 +255,14 @@ button.arrows.allowed:hover
 	top: 460px;
 	vertical-align: text-bottom;
 	line-height: 180px;
+}
+
+.simulation
+{
+	position:relative;
+	padding: -40px;
+	margin: -40px;
+	top: -610px;
+	left: 70px;
+	z-index: 1;
 }

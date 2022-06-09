@@ -27,7 +27,7 @@
         <button type="button" id="continue" class="buttons" onclick="document.getElementById('pause').classList.remove('appear')">Continuer</button>
         <br>
         <br>
-        <button type="button" id="helpButton" class="buttons" onclick="window.open('./help/','_blank')">Aide</button>
+        <button type="button" id="helpButton" class="buttons" onclick="window.open('./help','_blank')">Aide</button>
         <button type="menu" id="open" onclick="document.getElementById('pause').classList.add('appear');"><img src="./Images/arrow.png" style="position: relative; width: 50px; height: 50px; right: 50px;z-index: 2;"></button>
     </div>
     <h1>
@@ -73,8 +73,8 @@
                     <p>H</p>
                 </div>
             </div>
-            <div id="line_1" class="lines">
-                <p>1</p>
+            <div id="line_8" class="lines">
+                <p>8</p>
                 <div class="white_cell cell" id="1,1">
                     <img class="Rook piece black_piece" id="black_rook_1" draggable="true"
                         src="./Images/rook_black.png">
@@ -107,8 +107,8 @@
                         src="./Images/rook_black.png">
                 </div>
             </div>
-            <div id="line_2" class="lines">
-                <p>2</p>
+            <div id="line_7" class="lines">
+                <p>7</p>
                 <div class="black_cell cell" id="1,2">
                     <img class="Pawn piece black_piece" id="black_pawn_1" draggable="true"
                         src="./Images/pawn_black.png">
@@ -142,8 +142,8 @@
                         src="./Images/pawn_black.png">
                 </div>
             </div>
-            <div id="line_3" class="lines">
-                <p>3</p>
+            <div id="line_6" class="lines">
+                <p>6</p>
                 <div class="white_cell cell" id="1,3">
 
                 </div>
@@ -169,8 +169,8 @@
 
                 </div>
             </div>
-            <div id="line_4" class="lines">
-                <p>4</p>
+            <div id="line_5" class="lines">
+                <p>5</p>
                 <div class="black_cell cell" id="1,4">
 
                 </div>
@@ -196,8 +196,8 @@
 
                 </div>
             </div>
-            <div id="line_5" class="lines">
-                <p>5</p>
+            <div id="line_4" class="lines">
+                <p>4</p>
                 <div class="white_cell cell" id="1,5">
 
                 </div>
@@ -223,8 +223,8 @@
 
                 </div>
             </div>
-            <div id="line_6" class="lines">
-                <p>6</p>
+            <div id="line_3" class="lines">
+                <p>3</p>
                 <div class="black_cell cell" id="1,6">
 
                 </div>
@@ -250,8 +250,8 @@
 
                 </div>
             </div>
-            <div id="line_7" class="lines">
-                <p>7</p>
+            <div id="line_2" class="lines">
+                <p>2</p>
                 <div class="white_cell cell" id="1,7">
                     <img class="Pawn piece white_piece" id="white_pawn_1" draggable="true"
                         src="./Images/pawn_white.png">
@@ -285,8 +285,8 @@
                         src="./Images/pawn_white.png">
                 </div>
             </div>
-            <div id="line_8" class="lines">
-                <p>8</p>
+            <div id="line_1" class="lines">
+                <p>1</p>
                 <div class="black_cell cell" id="1,8">
                     <img class="Rook piece white_piece" id="white_rook_1" draggable="true"
                         src="./Images/rook_white.png">
@@ -326,9 +326,9 @@
         </div>
     </div>
     <div style="display: flex;flex-direction: row;">
-        <button class="arrows" id="left_arrow" onclick="back()"><img class="arrows"
+        <button class="arrows" id="left_arrow" onclick="back(this.classList)"><img class="arrows"
                 src="./Images/left_arrow.png"></button>
-        <button class="arrows" id="right_arrow" onclick="next()"><img class="arrows"
+        <button class="arrows" id="right_arrow" onclick="next(this.classList)"><img class="arrows"
                 src="./Images/right_arrow.png"></button>
     </div>
     <button id="fileButton" class="buttons" onclick="document.getElementById('file').click()">Choisir fichier .PGN</button>
