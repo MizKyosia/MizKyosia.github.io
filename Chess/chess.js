@@ -6,7 +6,9 @@ let grid = [[null, null, null, null, null, null, null, null], [null, null, null,
 var ended = false;
 var currentMove = 0;
 var currentPlayer = -1;
+/** @type {Map<string,string>} */
 const moves = new Map();
+/** @type {Map<string,[string,string]>} */
 const lastMoves = new Map()
 let selectedPiece;
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -62,7 +64,7 @@ function dragstart(e) {
     draggedPiece = this
     e.dataTransfer.effectAllowed = "move"
     e.dataTransfer.dropEffect = "move"
-    this.piece.valid_cells(document.querySelectorAll('.cell')).forEach(c => c.cell.highlight())
+    this.piece.valid_cells().forEach(c => c.cell.highlight())
 }
 
 /**
@@ -139,10 +141,10 @@ function dropCell(cell) {
             e.draggable = false;
             e.classList.add('no-drag');
         })
-        document.querySelectorAll(`.${this.piece?.color ? 'black' : 'white'}_piece`).forEach(e => {
-            for (const cell of e.piece.valid_cells()) {
-                if (!cell.cell.get_piece()) continue;
-                if (cell.cell.piece.name == `${this.piece?.color ? 'white' : 'black'}_king`) ended = true
+        document.querySelectorAll(`.${cell.cell.piece.color ? 'black' : 'white'}_piece`).forEach(e => {
+            for (const c of e.piece.valid_cells()) {
+                if (!c.cell.get_piece()) continue;
+                if (c.cell.piece.name == `${cell.cell.piece.color ? 'white' : 'black'}_king`) ended = true
             }
         })
         document.getElementById('player').innerHTML = draggedPiece.piece.color ? 'noir' : 'blanc'
@@ -163,7 +165,7 @@ function endgame() {
         p.draggable = false
         p.classList.add('no-drag')
     }
-    document.getElementById('announcement').innerHTML = `Le joueur <span id="player">${document.getElementById("player").innerHTML == "blanc" ? "noir" : "blanc"}</span> a gagné !`
+    document.getElementById('announcement').innerHTML = `Le joueur <span id="player">${document.getElementById("player").innerHTML}</span> a gagné !`
     alert("Partie terminée !")
 }
 
@@ -181,7 +183,6 @@ function load() {
          * @type {string[]}
          */
         const lines = this.result.split('\n');
-        document.getElementById('plate').innerHTML = originalPlate
         document.getElementById('announcement').innerHTML = "Reconstitution d'un match"
         document.querySelectorAll('.piece').forEach(e => { e.draggable = false; e.classList.add('no-drag') })
         var line = lines[0]
@@ -248,7 +249,7 @@ function clickPiece(e) {
     unlightPlate()
     this.parentElement.cell.set_piece(null)
     draggedPiece = this
-    this.piece.valid_cells(document.querySelectorAll('.cell')).forEach(c => c.cell.highlight())
+    this.piece.valid_cells().forEach(c => c.cell.highlight())
     return false
 }
 
@@ -296,6 +297,9 @@ function next(c) {
     if (currentMove < 0 || (currentMove == 0 && currentPlayer == 1)) document.getElementById('left_arrow').classList.add('allowed')
     // else document.getElementById('left_arrow').classList.remove('allowed')
     let m = moves.get(`${currentMove}-${currentPlayer}`)
+    let piece = {}
+    m
+    console.log(m)
     lastMoves.set(`${currentMove}-${currentPlayer}`, m)
     console.log("move : ", currentMove, "   player : ", currentPlayer, '\n', m, '\n', lastMoves)
 }
@@ -509,7 +513,7 @@ class Pawn extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         var double = false
         for (const [y, x, not_empty, m] of [[this.color ? -2 : 0, -1, false, false], [this.color ? -2 : 0, 0, true, false], [this.color ? -2 : 0, -2, true, false], [this.color ? -3 : 1, -1, false, true]]) {
@@ -544,7 +548,7 @@ class Rook extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         const coord = [[-1, 0], [0, -1], [0, 1], [1, 0]]
         coord.forEach(([a, b]) => {
@@ -583,7 +587,7 @@ class Bishop extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         const coord = [[-1, -1], [1, -1], [-1, 1], [1, 1]]
         coord.forEach(([a, b]) => {
@@ -622,7 +626,7 @@ class Queen extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]]
         coord.forEach(([a, b]) => {
@@ -661,7 +665,7 @@ class King extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]]
         for (const [a, b] of coord) {
@@ -695,7 +699,7 @@ class Horse extends BasePiece {
      * @param {DivCell[]} cells 
      * @returns {DivCell[]}
      */
-    valid_cells(cells) {
+    valid_cells() {
         const valid_cells = []
         const coord = [[-1, -2], [-2, -1], [2, -1], [-1, 2], [2, 1], [1, 2], [-2, 1], [1, -2]]
         for (const [a, b] of coord) {
