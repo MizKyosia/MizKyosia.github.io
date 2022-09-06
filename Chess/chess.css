@@ -51,15 +51,15 @@ a
 
 .buttons
 {
-	font-size: 1.5rem;
+	font-size: 2.75vh;
 	background:rgb(60, 60, 60);
-	height:70px;
-	width: 200px;
+	height:7.5vh;
+	width: 28vh;
 	cursor: pointer;
 	position: relative;
 	transition: all .4s;
 	z-index: 3;
-	border-radius: 40px;
+	border-radius: 20vh;
 	border: transparent;
 }
 
@@ -84,7 +84,10 @@ a
 .arrows
 {
 	background-color: rgba(0, 0, 0, 0);
-	height: 50px;
+	min-width: 50px;
+	min-height: 50px;
+	height:5vh;
+	width: 5vh;
 }
 
 button.arrows
@@ -93,6 +96,10 @@ button.arrows
 	cursor: not-allowed;
 	border: none;
 	filter:brightness(50%);
+	min-width: 50px;
+	min-height: 50px;
+	height:5vh;
+	width: 5vh;
 }
 
 button.arrows.allowed
@@ -109,7 +116,7 @@ button.arrows.allowed:hover
 #fileButton
 {
 	margin: 10px 0;
-	width: 300px;
+	min-width: 300px;
 	z-index: 0;
 }
 
@@ -172,6 +179,15 @@ button.arrows.allowed:hover
 	margin-top: 5px;
 }
 
+@media only screen and (hover: none) and (pointer: coarse){
+
+	#plate{
+		transform: scale(130%);
+		margin: 100px;
+	}
+	
+}
+
 #letters
 {
 	display: flex;
@@ -216,12 +232,7 @@ button.arrows.allowed:hover
 	vertical-align: middle;
 	transition: all .4s;
 }
-.over
-{
-	transform: scale(110%);
-	align-self: center;
-	vertical-align: middle;
-}
+
 .translated
 {
 	opacity: .4;
@@ -230,6 +241,32 @@ button.arrows.allowed:hover
 .highlight
 {
 	background-color: rgba(0, 255, 0, 0.8);
+	cursor: pointer;
+}
+
+.highlight:hover {
+	transform: scale(110%);
+	align-self: center;
+	vertical-align: middle;
+}
+
+.castle {
+	background-color: rgba(0, 0, 255, 0.8);
+}
+
+.ep {
+	background-color: rgba(255, 255, 0, 0.8);
+}
+
+.over
+{
+	transform: scale(110%);
+	align-self: center;
+	vertical-align: middle;
+}
+
+.highlight > .piece {
+	cursor: pointer;
 }
 
 .no-drag

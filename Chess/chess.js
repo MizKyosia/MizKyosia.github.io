@@ -1,729 +1,545 @@
-// import {POSITION,GridCell, Pawn} from "./src.ts";
-/**
- * @type {DivCell[][]}
- */
-let grid = [[null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null], [null, null, null, null, null, null, null, null]]
+const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 var ended = false;
 var currentMove = 0;
 var currentPlayer = -1;
-/** @type {Map<string,string>} */
 const moves = new Map();
-/** @type {Map<string,[string,string]>} */
-const lastMoves = new Map()
+const lastMoves = new Map();
 let selectedPiece;
+let originalPlate;
+let last;
 document.addEventListener("DOMContentLoaded", function (event) {
-    const originalPlate = document.getElementById('plate').innerHTML
+    originalPlate = document.getElementById('plate').innerHTML;
     this.addEventListener('keydown', function (e) {
         if (e.key == "Escape") {
             if (document.getElementById('pause').classList.contains('appear')) document.getElementById('pause').classList.remove('appear')
             else if (!document.getElementById('pause').classList.contains('appear') && !document.getElementById('choice').classList.contains('appear')) document.getElementById('pause').classList.add('appear')
-            else if (document.getElementById('help').style.display == "flex") document.getElementById('return').click()
-        }
-    })
-    document.querySelectorAll('.black_piece').forEach(e => { e.draggable = false; e.classList.add('no-drag') })
-    document.getElementById('file').onchange = load
-    let cells = document.querySelectorAll(".cell")
+            else if (document.getElementById('help').style.display == "flex") document.getElementById('return').click();
+        };
+    });
+    document.querySelectorAll('.black_piece').forEach(e => {
+        e.draggable = false;
+        e.classList.add('no-drag')
+    });
+    document.getElementById('file').onchange = load;
+    let cells = document.querySelectorAll(".cell");
     for (const cell of cells) {
-        cell.cell = new GridCell(cell.classList.contains('white_cell'), new POSITION(cell.id.split(",")[0], cell.id.split(",")[1]), cell)
-        cell.addEventListener("dragenter", dragenter)
-        cell.addEventListener("dragleave", dragleave)
-        cell.addEventListener("dragover", dragover)
-        cell.addEventListener("drop", drop)
-        cell.addEventListener('click', clickCell)
-    }
-    const pieces = document.querySelectorAll(".piece")
+        cell.addEventListener("dragenter", dragenter);
+        cell.addEventListener("dragleave", dragleave);
+        cell.addEventListener("dragover", dragover);
+        cell.addEventListener("drop", drop);
+        cell.addEventListener('click', clickCell);
+    };
+    const pieces = document.querySelectorAll(".piece");
     for (const piece of pieces) {
-        piece.piece = new types[piece.classList.item(0)](piece.classList.contains('white_piece'), piece.id, piece.classList.item(0).toLowerCase(), piece.parentElement.cell.position.toObject())
-        piece.addEventListener("dragstart", dragstart)
-        piece.addEventListener("dragend", dragend)
-        piece.addEventListener("dragover", dragover)
-        piece.addEventListener('click', clickPiece)
-        // piece.addEventListener("drop",drop)
-    }
+        piece.addEventListener("dragstart", dragstart);
+        piece.addEventListener("dragend", dragend);
+        piece.addEventListener("dragover", dragover);
+        piece.addEventListener('click', clickPiece);
+    };
     for (const c of document.querySelectorAll('.cell')) {
-        try { c.childElementCount > 0 ? c.cell.set_piece(c.firstElementChild.piece) : null; } catch (err) { console.log(err) }
-        grid[c.cell.position.y - 1][c.cell.position.x - 1] = c
-    }
-    for (const c of document.querySelectorAll('.choices')) c.addEventListener('click', choose)
-})
-/**
- * @type {PieceElement}
- */
+    };
+    for (const c of document.querySelectorAll('.choices')) c.addEventListener('click', choose);
+});
 let draggedPiece;
-/**
- * @type {PieceElement}
- */
 let promotedPiece;
-/**
- * @param {DragEvent} e L'event
- * @this {PieceElement}
- */
 function dragstart(e) {
-    this.classList.add('translated')
-    this.parentElement.cell.set_piece(null)
-    draggedPiece = this
-    e.dataTransfer.effectAllowed = "move"
-    e.dataTransfer.dropEffect = "move"
-    this.piece.valid_cells().forEach(c => c.cell.highlight())
-}
-
-/**
- * 
- * @param {DragEvent} e 
- * @this {PieceElement}
- */
+    this.classList.add('translated');
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.dropEffect = "move";
+    move(this)
+};
 function dragend(e) {
-    this.classList.remove('translated')
-    unlightPlate()
-
-    // this.outerHTML = draggedPiece
-    return false
-}
-
-/**
- * 
- * @param {DragEvent} e 
- * @this {DivCell}
- */
+    this.classList.remove('translated');
+    unlightPlate();
+    return false;
+};
 function dragleave(e) {
-    this.classList.remove('over')
-    e.dataTransfer.effectAllowed = "move"
-    e.dataTransfer.dropEffect = "move"
-}
-
-/**
- * 
- * @param {DragEvent} e 
- * @this {DivCell}
- */
+    this.classList.remove('over');
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.dropEffect = "move";
+};
 function dragenter(e) {
-    this.classList.add("over")
-    if (!this.cell.valid) {
-        e.dataTransfer.effectAllowed = "none"
-        e.dataTransfer.dropEffect = "none"
-    }
-}
-
-/**
- * 
- * @param {DragEvent} e 
- * @this {DivCell}
- */
+    if (this.classList.contains('highlight')) this.classList.add("over");
+    if (!this.classList.contains('highlight')) {
+        e.dataTransfer.effectAllowed = "none";
+        e.dataTransfer.dropEffect = "none";
+    };
+};
 function dragover(e) {
-    if (e.preventDefault) e.preventDefault()
-    return false
-}
-
-function drop(e){
-    e.stopPropagation()
-    dropCell(this)
-}
-
-/**
- * @param {DivCell} cell
- */
+    if (e.preventDefault) e.preventDefault();
+    return false;
+};
+function drop(e) {
+    e.stopPropagation();
+    dropCell(this);
+};
 function dropCell(cell) {
-    var ended = false
-    if (!cell.classList.contains('highlight')) return false
-    if (cell.cell.get_piece() && cell.cell.piece.color !== draggedPiece.piece.color) cell.innerHTML = ""
+    var ended = false;
+    if (!cell.classList.contains('highlight')) return false;
+    if (cell.firstElementChild && cell.firstElementChild.classList[2] !== draggedPiece.classList[2]) cell.innerHTML = "";
     if (!cell.firstElementChild || draggedPiece.id != cell.firstElementChild.id) {
-        document.querySelectorAll('.choices').forEach(e => e.src = `./Images/${e.id.toLowerCase()}_${draggedPiece.piece.color ? 'white' : 'black'}.png`)
-        draggedPiece.classList.remove('translated')
-        draggedPiece.piece.set_position(cell.cell.get_position()).set_moved(true)
-        cell.appendChild(draggedPiece)
-        cell.cell.set_piece(draggedPiece.piece)
-        if (cell.cell.position.y == (cell.cell.piece.color ? 1 : 8) && cell.cell.piece.pieceType == "pawn") {
-            document.getElementById('choice').classList.add('appear')
-            promotedPiece = cell.children[0]
+        if (cell.classList.contains('castle')) {
+            let rook,king;
+            if(cell.firstElementChild.classList[0] == 'Rook'){
+                rook = cell.firstElementChild
+                king = draggedPiece = 'castle'
+            }
+        } else if(cell.classList.contains('ep')) {
+            cell.classList.remove('highlight','ep')
+            document.getElementById(`${cell.id.split(',')[0]},${parseInt(cell.id.split(',')[1]) + (draggedPiece.classList[2] == 'white_piece' ? -1 : 1)}`).firstElementChild.remove()
+            cell.appendChild(draggedPiece)
+        } else{
+            document.querySelectorAll('.choices').forEach(e => e.src = `./Images/${e.id.toLowerCase()}_${draggedPiece.classList[2] == 'white_piece' ? 'white' : 'black'}.png`);
+            draggedPiece.classList.remove('translated');
+            if (!draggedPiece.classList.contains('moved')) draggedPiece.classList.add('moved')
+            cell.appendChild(draggedPiece);
+            if (cell.id.split(',')[1] == (cell.firstElementChild.classList[2] == 'black_piece' ? 1 : 8) && cell.firstElementChild.classList[0] == "Pawn") {
+                document.getElementById('choice').classList.add('appear');
+                promotedPiece = cell.firstElementChild;
+            };
         }
-        document.querySelectorAll('.no-drag').forEach(e => { e.draggable = true; e.classList.remove('no-drag'); })
-        document.querySelectorAll(`.${draggedPiece.piece.color ? 'white' : 'black'}_piece`).forEach(e => {
+        document.querySelectorAll('.no-drag').forEach(e => {
+            e.draggable = true;
+            e.classList.remove('no-drag');
+        });
+        document.querySelectorAll(`.${draggedPiece.classList[2]}`).forEach(e => {
             e.draggable = false;
             e.classList.add('no-drag');
-        })
-        document.querySelectorAll(`.${cell.cell.piece.color ? 'black' : 'white'}_piece`).forEach(e => {
-            for (const c of e.piece.valid_cells()) {
-                if (!c.cell.get_piece()) continue;
-                if (c.cell.piece.name == `${cell.cell.piece.color ? 'white' : 'black'}_king`) ended = true
-            }
-        })
-        document.getElementById('player').innerHTML = draggedPiece.piece.color ? 'noir' : 'blanc'
-        draggedPiece = null
-        if (ended) endgame()
-    }
-    else {
-        cell.cell.set_piece(draggedPiece.piece)
-    }
-    cell.classList.remove('over')
-    return true
-}
-
+        });
+        document.querySelectorAll(`.${draggedPiece.classList[2] == 'white_piece' ? 'black' : 'white'}_piece`).forEach(e => {
+            for (const c of validCellsGame(e)) {
+                if (!c.firstElementChild) continue;
+                if (c.firstElementChild.id.replace(/_[0-9]{1,}/, '') == `${draggedPiece.classList[2] == 'white_piece' ? 'white' : 'black'}_king`) ended = true;
+            };
+        });
+        document.getElementById('player').innerHTML = draggedPiece.classList[2] == 'white_piece' ? 'noir' : 'blanc';
+        draggedPiece = null;
+        if (ended) endgame();
+    };
+    cell.classList.remove('over');
+    currentPlayer == 0 ? currentPlayer = 1 : currentPlayer = 0;
+    return true;
+};
 function endgame() {
-    if (ended) return
-    ended = true
+    if (ended) return;
+    ended = true;
     for (const p of document.querySelectorAll('.piece')) {
-        p.draggable = false
-        p.classList.add('no-drag')
-    }
-    document.getElementById('announcement').innerHTML = `Le joueur <span id="player">${document.getElementById("player").innerHTML}</span> a gagné !`
-    alert("Partie terminée !")
-}
-
+        p.draggable = false;
+        p.classList.add('no-drag');
+    };
+    document.getElementById('announcement').innerHTML = `Le joueur <span id="player">${document.getElementById("player").innerHTML}</span> a gagné !`;
+    alert("Partie terminée !");
+};
 function load() {
-    currentMove = 0
-    currentPlayer = -1
+    currentMove = 0;
+    currentPlayer = -1;
     var file = this.files[0];
     var reader = new FileReader();
     reader.onload = function (progressEvent) {
-        // Entire file
-        console.log(this.result);
-
-        // By lines
-        /**
-         * @type {string[]}
-         */
-        const lines = this.result.split('\n');
-        document.getElementById('announcement').innerHTML = "Reconstitution d'un match"
-        document.querySelectorAll('.piece').forEach(e => { e.draggable = false; e.classList.add('no-drag') })
-        var line = lines[0]
-        while (line.startsWith('[')) {
-            console.log(line, line.split(' "')[0].replace('[', '').toLowerCase())
-            if (document.getElementById(line.split(' "')[0].replace('[', '').toLowerCase())) document.getElementById(line.split(' "')[0].replace('[', '').toLowerCase()).innerHTML = line.split(' "')[0].replace('[', '') + ' : ' + line.split(' "')[1].replace('"]', '')
-            lines.shift()
-            line = lines[0]
-        }
-        const m = lines.join().replace(/\r,/g, "").split(/[0-9]{1,3}\./g).map(e => { while (e.endsWith(' ')) { e = e.slice(0, e.length - 1) }; while (e.startsWith(' ')) { e = e.slice(1) }; return e.split(' '); })
-        while (m[0] == '') { m.shift(); console.log('shifted') }
-        for (let i = 0; i < m.length; i++) {
-            let z = m[i]
-            while (z[-1] == ' ') z.pop()
-            for (let x = 0; x < z.length; x++) {
-                moves.set(`${i}-${x}`, z[x])
-            }
-        }
-        console.log(moves)
-        if (m.length > 0) document.getElementById('right_arrow').classList.add('allowed')
-        setPlate()
-    }
-    reader.readAsText(file)
-}
-
-/**
- * 
- * @param {InputEvent} e
- * @this {HTMLElement}
- */
+        const lines = this.result.replace(/\{.{0,}\}/g, '').replace(/;.*/g, '').replace(/ {2,}/, ' ').split('\n');
+        document.getElementById('announcement').innerHTML = "Reconstitution d'un match";
+        var oldLine = lines[0];
+        let add = '';
+        while (oldLine.startsWith('[')) {
+            if (document.getElementById(oldLine.split(' "')[0].replace('[', '').toLowerCase())) document.getElementById(oldLine.split(' "')[0].replace('[', '').toLowerCase()).innerHTML = oldLine.split(' "')[0].replace('[', '') + ' : ' + oldLine.split(' "')[1].replace('"]', '')
+            else add += `<h3 id="${oldLine.split(' "')[0].replace('[', '').toLowerCase()}">${oldLine.split(' "')[0].replace('[', '')} : ${oldLine.split(' "')[1].replace('"]', '')}</h3>`;
+            lines.shift();
+            oldLine = lines[0];
+        };
+        document.getElementById('announcement').outerHTML += add;
+        let m = lines.join(' ').replace(/\r/g, "").split(/[0-9]{1,}\./g).map(e => {
+            while (e.endsWith(' ')) { e = e.slice(0, e.length - 1) };
+            while (e.startsWith(' ')) { e = e.slice(1) };
+            return e.split(' ');
+        });
+        while (m[0] == '') m.shift();
+        for (let i = 0;
+            i < m.length;
+            i++) {
+            let z = m[i];
+            while (z[-1] == ' ') z.pop();
+            for (let x = 0;
+                x < z.length;
+                x++) {
+                if (x === 2) moves.set(`${i - 1}-2`, z[x]);
+                moves.set(`${i}-${x}`, z[x]);
+            };
+        };
+        if (m.length > 0) document.getElementById('right_arrow').classList.add('allowed');
+        setPlate();
+    };
+    reader.readAsText(file);
+};
 function choose(e) {
-    document.getElementById('choice').classList.remove('appear')
-    console.log(this.id, promotedPiece)
-    promotedPiece.piece = new types[this.id](promotedPiece.classList.contains('white_piece'), promotedPiece.id, this.id.toLowerCase(), promotedPiece.parentElement.cell.position)
-    promotedPiece.classList.replace('Pawn', this.id)
-    promotedPiece.src = promotedPiece.src.replace('pawn', this.id.toLowerCase())
-}
-
+    document.getElementById('choice').classList.remove('appear');
+    promotedPiece.classList.replace('Pawn', this.id);
+    promotedPiece.src = promotedPiece.src.replace('pawn', this.id.toLowerCase());
+};
 function unlightPlate() {
     for (const cell of document.querySelectorAll(".highlight")) {
-        cell.cell.unlight()
-    }
+        cell.classList.remove('highlight', 'castle');
+    };
     for (const cell of document.querySelectorAll(".over")) {
-        cell.classList.remove('over')
-    }
-}
-
+        cell.classList.remove('over');
+    };
+};
 function clickCell(e) {
-    if (!draggedPiece || this.firstElementChild?.id == draggedPiece.id) return
-    console.log('cell clicked')
+    if (!draggedPiece || this.firstElementChild?.id == draggedPiece.id) return;
     if (this.classList.contains('highlight')) {
-        draggedPiece.parentElement.innerHTML = null
-        dropCell(this)
-        console.log(draggedPiece)
-    }
-    unlightPlate()
-    draggedPiece = null
-    return false
-}
-
+        draggedPiece.parentElement.innerHTML = null;
+        dropCell(this);
+    };
+    unlightPlate();
+    draggedPiece = null;
+    return false;
+};
 function clickPiece(e) {
-    if(this.classList.contains('no-drag')) return false
-    console.log('piece clicked')
+    if (this.classList.contains('no-drag') || this.parentElement.classList.contains('highlight')) return false;
+    move(this)
+    return false;
+};
+function move(p){
+    const x = parseInt(p.parentElement.id.split(',')[0])
+    const y = parseInt(p.parentElement.id.split(',')[1])
     unlightPlate()
-    this.parentElement.cell.set_piece(null)
-    draggedPiece = this
-    this.piece.valid_cells().forEach(c => c.cell.highlight())
-    return false
+    draggedPiece = p;
+    validCellsGame(p).forEach(c => c.classList.add('highlight'));
+    if (p.classList[0] == 'Pawn' && y == (p.classList[2] == 'white_piece' ? 5 : 4)){
+        if(last == `${x+1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x+1},${y}`)?.childElementCount > 0) document.getElementById(`${x+1},${y+1}`).classList.add('highlight','ep')
+        if(last == `${x-1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x-1},${y}`)?.childElementCount > 0) document.getElementById(`${x-1},${y+(p.classList[2] == 'white_piece' ? 1 : -1)}`).classList.add('highlight','ep')
+    } else if (!p.classList.contains('moved')) {
+        if (p.classList[0] == 'King') document.querySelectorAll(`.Rook.${p.classList[2]}`).forEach(c => {
+            if (!c.classList.contains('moved') && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0) c.parentElement.classList.add('highlight', 'castle')
+        })
+        else if (p.classList[0] == 'Rook') {
+            if (!p.classList.contains('moved') && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0) document.querySelector(`.King.${p.classList[2]}`).parentElement.classList.add('highlight', 'castle')
+        }
+    }
+    last = p.parentElement.id
 }
-
 function setPlate() {
+    document.getElementById('plate').innerHTML = originalPlate;
+    document.querySelectorAll('.piece').forEach(e => {
+        e.draggable = false;
+        e.classList.add('no-drag')
+    });
     for (const p of document.querySelectorAll('.piece')) {
         if (p.parentElement.id != 'plate') {
-            p.setAttribute('style', `transform:translate(${parseInt(p.parentElement.id.split(',')[0]) * 80 - 80}px,${parseInt(p.parentElement.id.split(',')[1]) * 80 - 80}px);`)
-            p.id = p.parentElement.id
+            p.setAttribute('style', `transform:translate(${parseInt(p.parentElement.id.split(',')[0] * 80 - 80)}px,${640 - (parseInt(p.parentElement.id.split(',')[1]) * 80)}px);
+`);
+            p.id = p.parentElement.id;
+            p.parentElement.id = 'null';
         } else {
-            p.setAttribute('style', `transform:translate(${parseInt(p.id.split(',')[0]) * 80 - 80}px,${parseInt(p.id.split(',')[1]) * 80 - 80}px);`)
-        }
-        document.getElementById('plate').appendChild(p).classList.add('simulation')
-    }
-}
-
+            p.setAttribute('style', `transform:translate(${parseInt(p.id.split(',')[0]) * 80 - 80}px,${640 - (parseInt(p.id.split(',')[1]) * 80)}px);
+`);
+        };
+        document.getElementById('plate').appendChild(p).classList.add('simulation');
+    };
+    for (const c of document.querySelectorAll('.cell')) {
+        c.id = 'null';
+    };
+};
 function back(c) {
-    if (!c.contains('allowed')) return
+    if (!c.contains('allowed') && c != null) return;
+    document.getElementById('right_arrow').classList.add('allowed');
+    let m = lastMoves.get(`${currentMove}-${currentPlayer}`);
+    lastMoves.delete(`${currentMove}-${currentPlayer}`);
     if (currentMove === 0 && currentPlayer === 0) {
-        currentPlayer--
-        document.getElementById('left_arrow').classList.remove('allowed')
-        setPlate()
-        console.log("move : ", currentMove, "   player : ", currentPlayer)
-        return
-    }
+        currentPlayer--;
+        document.getElementById('left_arrow').classList.remove('allowed');
+        setPlate();
+        return;
+    };
     if (currentMove >= 0 && currentPlayer == 1) currentPlayer--
-    else if (currentMove >= 0 && currentPlayer == 0) { currentMove--; currentPlayer = 1 }
-    if (currentMove == 0 && currentPlayer == -1) document.getElementById('left_arrow').classList.remove('allowed')
-    if (currentMove < moves.length - 1 || (currentMove == moves.length - 1 && currentPlayer == 0)) document.getElementById('right_arrow').classList.add('allowed')
-    // else document.getElementById('right_arrow').classList.remove('allowed')
-    let m = lastMoves.get(`${currentMove}-${currentPlayer}`)
-    lastMoves.delete(`${currentMove}-${currentPlayer}`)
-    console.log("move : ", currentMove, "   player : ", currentPlayer, '\n', m, '\n', lastMoves)
-}
-
+    else if (currentMove >= 0 && currentPlayer == 0) {
+        currentMove--;
+        currentPlayer = 1
+    };
+    if (currentMove == 0 && currentPlayer == -1) document.getElementById('left_arrow').classList.remove('allowed');
+    if (currentMove < moves.length - 1 || (currentMove == moves.length - 1 && currentPlayer == 0)) document.getElementById('right_arrow').classList.add('allowed');
+    if (m.id === 'O-O-O') {
+        var a = document.getElementById(`3,${currentPlayer == 1 ? '1' : '8'}`);
+        var b = document.getElementById(`2,${currentPlayer == 1 ? '1' : '8'}`);
+        a.setAttribute('style', `transform:translate(320px,${currentPlayer == 1 ? 560 : 0}px);
+`);
+        b.setAttribute('style', `transform:translate(0px,${currentPlayer == 1 ? 560 : 0}px);
+`);
+        a.id = `5,${a.id.split(',')[1]}`;
+        b.id = `1,${b.id.split(',')[1]}`;
+        return;
+    } else if (m.id === 'O-O') {
+        var a = document.getElementById(`7,${currentPlayer == 1 ? '1' : '8'}`);
+        var b = document.getElementById(`6,${currentPlayer == 1 ? '1' : '8'}`);
+        a.setAttribute('style', `transform:translate(320px,${currentPlayer == 1 ? 560 : 0}px);
+`);
+        b.setAttribute('style', `transform:translate(560px,${currentPlayer == 1 ? 560 : 0}px);
+`);
+        a.id = `5,${a.id.split(',')[1]}`;
+        b.id = `8,${b.id.split(',')[1]}`;
+        return;
+    };
+    const p = document.getElementById(m.id);
+    p.setAttribute('style', `transform:${m.position}`);
+    p.id = m.lastId;
+    if (m.taken !== '') document.getElementById('plate').innerHTML += m.taken;
+};
 function next(c) {
-    if (!c.contains('allowed')) return
+    if (!c.contains('allowed') && c != null) return;
     if (currentMove === 0 && currentPlayer === -1) {
-        currentPlayer++
-        document.getElementById('left_arrow').classList.add('allowed')
-        console.log("move : ", currentMove, "   player : ", currentPlayer)
+        currentPlayer++;
+        document.getElementById('left_arrow').classList.add('allowed');
     }
     else if (currentMove >= 0 && currentPlayer == 0) currentPlayer++
-    else if (currentMove >= 0 && currentPlayer == 1) { currentMove++; currentPlayer = 0 }
-    if (currentMove == moves.length - 1 && currentPlayer == 1) document.getElementById('right_arrow').classList.remove('allowed')
-    if (currentMove < 0 || (currentMove == 0 && currentPlayer == 1)) document.getElementById('left_arrow').classList.add('allowed')
-    // else document.getElementById('left_arrow').classList.remove('allowed')
-    let m = moves.get(`${currentMove}-${currentPlayer}`)
-    let piece = {}
-    m
-    console.log(m)
-    lastMoves.set(`${currentMove}-${currentPlayer}`, m)
-    console.log("move : ", currentMove, "   player : ", currentPlayer, '\n', m, '\n', lastMoves)
-}
-
-class POSITION {
-    /**
-     * 
-     * @param {number} x 
-     * @param {number} y 
-     * @returns {POSITION}
-     */
-    constructor(x, y) { this.x = parseInt(x); this.y = parseInt(y); return this; }
-    /**
-     * @type {number}
-     */
-    x
-    /**
-     * @type {number}
-     */
-    y
-    /**
-     * 
-     * @returns {string}
-     */
-    toString() { return this.x.toString() + ',' + this.y.toString() }
-    toObject() { return { x: this.x, y: this.y } }
-}
-
-class GridCell {
-    /**
-     * 
-     * @param {boolean} color 
-     * @param {POSITION} position 
-     * @param {HTMLElement} element 
-     * @returns {GridCell}
-     */
-    constructor(color, position, element) {
-        this.position = position
-        this.color = color
-        this.element = element
-        return this
-    }
-    /**
-     * @type {POSITION}
-     */
-    position
-    valid = false
-    /**
-     * @type {boolean}
-     */
-    color
-    /**
-     * @type {HTMLElement}
-     */
-    element
-    /**
-     * @type {BasePiece}
-     */
-    piece = null
-    /**
-     * @type {boolean}
-     */
-    highlighted = false
-    /**
-     * 
-     * @param {BasePiece|null} piece 
-     * @returns {this}
-     */
-    set_piece(piece) {
-        this.piece = piece
-        return this
-    }
-    /**
-     * 
-     * @returns {BasePiece|null}
-     */
-    get_piece() {
-        return this.piece
-    }
-    /**
-     * 
-     * @returns {POSITION}
-     */
-    get_position() {
-        return this.position
-    }
-    /**
-     * 
-     * @returns {boolean}
-     */
-    get_color() {
-        return this.color
-    }
-    /**
-     * 
-     * @returns {HTMLElement}
-     */
-    get_element() {
-        return this.element
-    }
-    /**
-     * 
-     * @returns {this}
-     */
-    highlight() {
-        this.element.classList.add('highlight')
-        this.highlighted = true
-        this.valid = true
-        return this
-    }
-    /**
-     * 
-     * @returns {this}
-     */
-    unlight() {
-        this.element.classList.remove('highlight')
-        this.highlighted = false
-        this.valid = false
-        return this
-    }
-
-}
-
-class DivCell extends HTMLElement {
-    cell = new GridCell()
-}
-
-class PieceElement extends HTMLElement {
-    piece = new BasePiece()
-}
-
-class BasePiece {
-    /**
-     * 
-     * @param {boolean} color 
-     * @param {string} name 
-     * @param {POSITION} position 
-     * @param {string} pieceType
-     * @returns 
-     */
-    constructor(color, name, pieceType, position) {
-        this.color = color
-        this.name = name
-        this.position = position
-        this.pieceType = pieceType
-        return this;
-    }
-    /**
-     * @type {string}
-     */
-    pieceType = ''
-    /**
-     * @type {POSITION}
-     */
-    position = null
-    moved = false
-    /**
-     * @type {string}
-     */
-    name = ""
-    /**
-     * @type {boolean}
-     */
-    color = null
-    /**
-     * 
-     * @returns {POSITION}
-     */
-    get_position() {
-        return this.position
-    }
-    /**
-     * 
-     * @param {POSITION} position
-     * @returns {this}
-     */
-    set_position(position) {
-        this.position = position
-        this.moved = true
-        return this
-    }
-    /**
-     * 
-     * @param {boolean} moved 
-     * @returns {this}
-     */
-    set_moved(moved) {
-        this.moved = moved
-        return this
-    }
-    /**
-     * 
-     * @returns {string}
-     */
-    get_name() {
-        return this.name
-    }
-    /**
-     * 
-     * @returns {boolean}
-     */
-    get_color() {
-        return this.color
-    }
-
-}
-
-class Pawn extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        var double = false
-        for (const [y, x, not_empty, m] of [[this.color ? -2 : 0, -1, false, false], [this.color ? -2 : 0, 0, true, false], [this.color ? -2 : 0, -2, true, false], [this.color ? -3 : 1, -1, false, true]]) {
-            let c;
-            try {
-                c = grid[this.position.y + y][this.position.x + x]
-            } catch (e) { c = undefined }
-            if (!c) continue;
-            if (not_empty && c.cell.get_piece() && c.cell.get_piece().get_color() != this.color) valid_cells.push(c)
-            else if (not_empty && c.lastElementChild && !c.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(c)
-            else if (!m == this.moved && !c.cell.get_piece() && !not_empty && double) { valid_cells.push(c) }
-            else if (!c.cell.get_piece() && !c.lastElementChild && !m && !not_empty) { valid_cells.push(c); double = true }
-        }
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
-}
-
-class Rook extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        const coord = [[-1, 0], [0, -1], [0, 1], [1, 0]]
-        coord.forEach(([a, b]) => {
-            let valid = true
-            for (var i = 1; i < 8; i++) {
-                let cell;
-                try { cell = grid[this.position.y + (i * b) - 1][this.position.x + (i * a) - 1] } catch (e) { cell = undefined }
-                if (!cell) break;
-                if (cell.cell.get_piece()) {
-                    if (!cell.cell.get_piece().color === this.color) valid_cells.push(cell)
-                    break
-                } else if (cell.lastElementChild) {
-                    if (!cell.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(cell)
-                    break
-                } else valid_cells.push(cell)
-            }
-        })
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
-}
-
-class Bishop extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        const coord = [[-1, -1], [1, -1], [-1, 1], [1, 1]]
-        coord.forEach(([a, b]) => {
-            let valid = true
-            for (var i = 1; i < 8; i++) {
-                let cell;
-                try { cell = grid[this.position.y + (i * b) - 1][this.position.x + (i * a) - 1] } catch (e) { cell = undefined }
-                if (!cell) break;
-                if (cell.cell.get_piece()) {
-                    if (!cell.cell.get_piece().color === this.color) valid_cells.push(cell)
-                    break
-                } else if (cell.lastElementChild) {
-                    if (!cell.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(cell)
-                    break
-                } else valid_cells.push(cell)
-            }
-        })
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
-}
-
-class Queen extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]]
-        coord.forEach(([a, b]) => {
-            let valid = true
-            for (var i = 1; i < 8; i++) {
-                let cell;
-                try { cell = grid[this.position.y + (i * b) - 1][this.position.x + (i * a) - 1] } catch (e) { cell = undefined }
-                if (!cell) break;
-                if (cell.cell.get_piece()) {
-                    if (!cell.cell.get_piece().color === this.color) valid_cells.push(cell)
-                    break
-                } else if (cell.lastElementChild) {
-                    if (!cell.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(cell)
-                    break
-                } else valid_cells.push(cell)
-            }
-        })
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
-}
-
-class King extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]]
+    else if (currentMove >= 0 && currentPlayer == 1) {
+        currentMove++;
+        currentPlayer = 0
+    };
+    if ((currentMove == Math.round(moves.size / 2) - 1 && currentPlayer % 2 == 1) || (currentMove == moves.length && currentPlayer == 0)) document.getElementById('right_arrow').classList.remove('allowed');
+    if (currentMove > 0 || (currentMove == 0 && currentPlayer == 1)) document.getElementById('left_arrow').classList.add('allowed');
+    let m = moves.get(`${currentMove}-${currentPlayer}`);
+    let piece = 'Pawn';
+    let oldColumn = 0;
+    let oldLine = 0;
+    var taken = false;
+    let pastPiece = { lastId: '', position: '', id: '', taken: '' };
+    if (m === '1/2-1/2' || m === '1-0' || m === '0-1') {
+        return document.getElementById('right_arrow').classList.remove('allowed');
+    } else if (m.startsWith('O')) {
+        if (m == 'O-O') {
+            var a = document.getElementById(`5,${currentPlayer == 1 ? '8' : '1'}`);
+            var b = document.getElementById(`8,${currentPlayer == 1 ? '8' : '1'}`);
+            if (a && b) {
+                a.setAttribute('style', `transform:translate(480px,${currentPlayer == 1 ? 0 : 560}px);`);
+                b.setAttribute('style', `transform:translate(400px,${currentPlayer == 1 ? 0 : 560}px);`);
+                a.id = `7,${a.id.split(',')[1]}`;
+                b.id = `6,${b.id.split(',')[1]}`;
+            };
+        } else {
+            var a = document.getElementById(`5,${currentPlayer == 1 ? '8' : '1'}`);
+            var b = document.getElementById(`1,${currentPlayer == 1 ? '8' : '1'}`);
+            if (a && b) {
+                a.setAttribute('style', `transform:translate(80px,${currentPlayer == 1 ? 0 : 560}px);`);
+                b.setAttribute('style', `transform:translate(160px,${currentPlayer == 1 ? 0 : 560}px);`);
+                a.id = `3,${a.id.split(',')[1]}`;
+                b.id = `2,${b.id.split(',')[1]}`;
+            };
+        };
+        pastPiece.id = m;
+        lastMoves.set(`${currentMove}-${currentPlayer}`, pastPiece);
+        return;
+    };
+    if (m[0].match(/[BKQNRP]/)) {
+        if (m[0] === 'B') piece = 'Bishop'
+        else if (m[0] === 'K') piece = 'King'
+        else if (m[0] === 'Q') piece = 'Queen'
+        else if (m[0] === 'N') piece = 'Knight'
+        else if (m[0] === 'R') piece = 'Rook'
+        else if (m[0] === 'P') piece = 'Piece';
+        m = m.slice(1);
+    };
+    if (m[0].match(/[a-h]/) && m[1].match(/[a-hx]/)) {
+        oldColumn = letter(m[0]);
+        m = m.slice(1);
+    } else if (m[0].match(/[1-8]/) && m[1].match(/[a-hx]/)) {
+        oldLine = parseInt(m[0]);
+        m = m.slice(1);
+    } else if (m.length > 3 && m[0].match(/[a-h]/) && m[1].match(/[1-8]/) && m[2].match(/[a-hx]/)) {
+        oldColumn = letter(m[0]);
+        oldLine = parseInt(m[1]);
+        m = m.slice(2);
+    };
+    if (m[0] === 'x') {
+        taken = true;
+        m = m.slice(1);
+    };
+    const column = letter(m[0]);
+    const line = parseInt(m[1]);
+    if (oldColumn > 0 && oldLine > 0) {
+        let p = document.getElementById(`${oldColumn},${oldLine}`);
+        pastPiece.position = p.style.transform;
+        pastPiece.lastId = p.id;
+        p.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
+`);
+        if (taken) {
+            var z = document.getElementById(`${column},${line}`);
+            pastPiece.taken = z.outerHTML;
+            z.remove();
+        };
+        p.id = `${column},${line}`;
+        pastPiece.id = p.id;
+    } else if (oldColumn > 0 || oldLine > 0) {
+        for (const o of document.querySelectorAll(`.${piece}.${currentPlayer === 0 ? 'white' : 'black'}_piece`)) {
+            if ((o.id.split(',')[0] == oldColumn || o.id.split(',')[1] == oldLine) && isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentPlayer))) {
+                pastPiece.position = o.style.transform;
+                pastPiece.lastId = o.id;
+                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
+`);
+                if (taken) {
+                    var e = document.getElementById(`${column},${line}`);
+                    pastPiece.taken = e.outerHTML;
+                    e.remove();
+                };
+                o.id = `${column},${line}`;
+                pastPiece.id = o.id;
+                break;
+            };
+        };
+    } else {
+        for (const o of document.querySelectorAll(`.${piece}.${currentPlayer === 0 ? 'white' : 'black'}_piece`)) {
+            if (isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentPlayer))) {
+                pastPiece.position = o.style.transform;
+                pastPiece.lastId = o.id;
+                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
+`);
+                if (taken) {
+                    var e = document.getElementById(`${column},${line}`);
+                    pastPiece.taken = e.outerHTML;
+                    e.remove();
+                };
+                o.id = `${column},${line}`;
+                pastPiece.id = o.id;
+                break;
+            };
+        };
+    };
+    lastMoves.set(`${currentMove}-${currentPlayer}`, pastPiece);
+};
+function letter(l) {
+    let x = 1;
+    for (e of alphabet) {
+        if (l === e) return x;
+        x++;
+    };
+};
+function validCellsGame(piece) {
+    const x = parseInt(piece.parentElement.id.split(',')[0]);
+    const y = parseInt(piece.parentElement.id.split(',')[1]);
+    const type = piece.classList[0];
+    const color = piece.classList[2];
+    let valid_cells = [];
+    if (type == 'King') {
+        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]];
         for (const [a, b] of coord) {
-            let cell;
-            try { cell = grid[this.position.y + b - 1][this.position.x + a - 1] } catch (e) { cell = undefined }
-            if (!cell) continue;
-            if (cell.cell.get_piece()) {
-                if (!cell.cell.get_piece().color === this.color) valid_cells.push(cell)
-            } else if (cell.lastElementChild) {
-                if (!cell.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(cell)
-            } else valid_cells.push(cell)
-        }
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
-}
-
-class Horse extends BasePiece {
-    /**
-     * 
-     * @param {DivCell[]} cells 
-     * @returns {DivCell[]}
-     */
-    valid_cells() {
-        const valid_cells = []
-        const coord = [[-1, -2], [-2, -1], [2, -1], [-1, 2], [2, 1], [1, 2], [-2, 1], [1, -2]]
+            let e = document.getElementById(`${a + x},${b + y}`);
+            if (e && e?.firstElementChild?.classList[2] != color) valid_cells.push(e);
+        };
+    } else if (type == 'Queen') {
+        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]];
         for (const [a, b] of coord) {
-            let cell;
-            try { cell = grid[this.position.y + b - 1][this.position.x + a - 1] } catch (e) { cell = undefined }
-            if (!cell) continue;
-            if (cell.cell.get_piece()) {
-                if (!cell.cell.get_piece().color === this.color) valid_cells.push(cell)
-            } else if (cell.lastElementChild) {
-                if (!cell.lastElementChild.classList.contains(`${this.color ? 'white' : 'black'}_piece`)) valid_cells.push(cell)
-            } else valid_cells.push(cell)
-        }
-        return valid_cells
-    }
-    /**
-     * 
-     * @param {POSITION} position d
-     * @param {DivCell[]} cells 
-     * @returns {this}
-     */
-    move(position, cells) {
-        if (0 < position.x && position.x < 9 && 0 < position.y && position.y < 9) this.position = position
-        this.moved = true
-        return this
-    }
+            for (var i = 1;
+                i < 9;
+                i++) {
+                let e = document.getElementById(`${i * a + x},${i * b + y}`);
+                if (!e) break
+                else if (e && e.childElementCount == 0) valid_cells.push(e)
+                else if (e?.firstElementChild.classList[2] != color) {
+                    valid_cells.push(e);
+                    break;
+                }
+                else break;
+            };
+        };
+    } else if (type == 'Rook') {
+        const coord = [[0, -1], [-1, 0], [0, 1], [1, 0]];
+        for (const [a, b] of coord) {
+            for (var i = 1;
+                i < 9;
+                i++) {
+                let e = document.getElementById(`${i * a + x},${i * b + y}`);
+                if (!e) break
+                else if (e && e.childElementCount == 0) valid_cells.push(e)
+                else if (e?.firstElementChild.classList[2] != color) {
+                    valid_cells.push(e);
+                    break;
+                }
+                else break;
+            };
+        };
+    } else if (type == 'Bishop') {
+        const coord = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
+        for (const [a, b] of coord) {
+            for (var i = 1;
+                i < 9;
+                i++) {
+                let e = document.getElementById(`${i * a + x},${i * b + y}`);
+                if (!e) break
+                else if (e && e.childElementCount == 0) valid_cells.push(e)
+                else if (e?.firstElementChild.classList[2] != color) {
+                    valid_cells.push(e);
+                    break;
+                }
+                else break;
+            };
+        };
+    } else if (type == 'Knight') {
+        let z = [`${x + 2},${y + 1}`, `${x + 1},${y + 2}`, `${x + 2},${y - 1}`, `${x - 2},${y + 1}`, `${x + 1},${y - 2}`, `${x - 1},${y + 2}`, `${x - 2},${y - 1}`, `${x - 1},${y - 2}`];
+        for (a of z) {
+            let e = document.getElementById(a);
+            if (!e) {
+                continue
+            }
+            else if (e.firstElementChild && e.firstElementChild.classList[2] == color) {
+                continue
+            }
+            else valid_cells.push(e);
+        };
+    } else {
+        let e = document.getElementById(`${x},${y + (color == 'white_piece' ? 1 : -1)}`);
+        if (e && !e.firstElementChild) valid_cells.push(e);
+        if (document.getElementById(`${x + 1},${y + (color == 'white_piece' ? 1 : -1)}`)?.firstElementChild?.classList.contains(color == 'white_piece' ? 'black_piece' : 'white_piece')) valid_cells.push(document.getElementById(`${x + 1},${y + (color == 'white_piece' ? 1 : -1)}`));
+        if (document.getElementById(`${x - 1},${y + (color == 'white_piece' ? 1 : -1)}`)?.firstElementChild?.classList.contains(color == 'white_piece' ? 'black_piece' : 'white_piece')) valid_cells.push(document.getElementById(`${x - 1},${y + (color == 'white_piece' ? 1 : -1)}`));
+        if (y == (color == 'white_piece' ? 2 : 7) && document.getElementById(`${x},${y + (color == 'white_piece' ? 2 : -2)}`).childElementCount == 0 && e.childElementCount == 0) valid_cells.push(document.getElementById(`${x},${y + (color == 'white_piece' ? 2 : -2)}`));
+    };
+    return valid_cells;
+};
+function isIn(a, b) {
+    for (c of b) {
+        if (a === c) return true;
+    } return false;
+};
+function validCells(position, type, color) {
+    const x = parseInt(position[0]);
+    const y = parseInt(position[1]);
+    let valid_cells = [];
+    if (type == 'King') {
+        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]];
+        for (const [a, b] of coord) {
+            valid_cells.push(`${a + x},${b + y}`);
+        };
+    } else if (type == 'Queen') {
+        const coord = [[-1, -1], [0, -1], [1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]];
+        for (const [a, b] of coord) {
+            for (var i = 0;
+                i < 9;
+                i++) {
+                valid_cells.push(`${i * a + x},${i * b + y}`);
+            };
+        };
+    } else if (type == 'Rook') {
+        const coord = [[0, -1], [-1, 0], [0, 1], [1, 0]];
+        for (const [a, b] of coord) {
+            for (var i = 0;
+                i < 9;
+                i++) {
+                valid_cells.push(`${a * i + x},${b * i + y}`);
+            };
+        };
+    } else if (type == 'Bishop') {
+        const coord = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
+        for (const [a, b] of coord) {
+            for (var i = 0;
+                i < 9;
+                i++) {
+                valid_cells.push(`${a * i + x},${b * i + y}`);
+            };
+        };
+    } else if (type == 'Knight') {
+        valid_cells = [`${x + 2},${y + 1}`, `${x + 1},${y + 2}`, `${x + 2},${y - 1}`, `${x - 2},${y + 1}`, `${x + 1},${y - 2}`, `${x - 1},${y + 2}`, `${x - 2},${y - 1}`, `${x - 1},${y - 2}`];
+    } else {
+        valid_cells.push(`${x},${y + (color == 0 ? 1 : -1)}`);
+        if (document.getElementById(`${x + 1},${y + (color == 0 ? 1 : -1)}`)?.classList.contains(color == 0 ? 'black_piece' : 'white_piece')) valid_cells.push(`${x + 1},${y + (color == 0 ? 1 : -1)}`);
+        if (document.getElementById(`${x - 1},${y + (color == 0 ? 1 : -1)}`)?.classList.contains(color == 0 ? 'black_piece' : 'white_piece')) valid_cells.push(`${x - 1},${y + (color == 0 ? 1 : -1)}`);
+        if (y == (color == 0 ? 2 : 7)) valid_cells.push(`${x},${y + (color == 0 ? 2 : -2)}`);
+    };
+    return valid_cells;
 }
-const types = { Rook: Rook, Queen: Queen, King: King, Horse: Horse, Bishop: Bishop, Pawn: Pawn }
