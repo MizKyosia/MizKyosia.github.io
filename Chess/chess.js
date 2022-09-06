@@ -7,6 +7,7 @@ const lastMoves = new Map();
 let selectedPiece;
 let originalPlate;
 let last;
+let direction;
 document.addEventListener("DOMContentLoaded", function (event) {
     originalPlate = document.getElementById('plate').innerHTML;
     this.addEventListener('keydown', function (e) {
@@ -82,8 +83,14 @@ function dropCell(cell) {
             let rook,king;
             if(cell.firstElementChild.classList[0] == 'Rook'){
                 rook = cell.firstElementChild
-                king = draggedPiece = 'castle'
+                king = draggedPiece
+                last = 'castle'
+            } else {
+                rook = draggedPiece
+                king = cell.firstElementChild
             }
+            document.getElementById(`${direction ? '7' : '2'},${king.classList[2] == 'white_piece' ? '1' : '8'}`).append(king)
+            document.getElementById(`${direction ? '6' : '3'},${king.classList[2] == 'white_piece' ? '1' : '8'}`).append(rook)
         } else if(cell.classList.contains('ep')) {
             cell.classList.remove('highlight','ep')
             document.getElementById(`${cell.id.split(',')[0]},${parseInt(cell.id.split(',')[1]) + (draggedPiece.classList[2] == 'white_piece' ? -1 : 1)}`).firstElementChild.remove()
@@ -209,10 +216,14 @@ function move(p){
         if(last == `${x-1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x-1},${y}`)?.childElementCount > 0) document.getElementById(`${x-1},${y+(p.classList[2] == 'white_piece' ? 1 : -1)}`).classList.add('highlight','ep')
     } else if (!p.classList.contains('moved')) {
         if (p.classList[0] == 'King') document.querySelectorAll(`.Rook.${p.classList[2]}`).forEach(c => {
-            if (!c.classList.contains('moved') && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0) c.parentElement.classList.add('highlight', 'castle')
+            if (!c.classList.contains('moved') && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0){
+                c.parentElement.classList.add('highlight', 'castle')
+                direction = c.parentElement.id.split(',')[0] == '8'
+            }
         })
         else if (p.classList[0] == 'Rook') {
             if (!p.classList.contains('moved') && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0) document.querySelector(`.King.${p.classList[2]}`).parentElement.classList.add('highlight', 'castle')
+            direction = p.parentElement.id.split(',')[0] == '8'
         }
     }
     last = p.parentElement.id
