@@ -1,4 +1,4 @@
 # BaguetteDev's website
-This is the code for my website. It is hosted on github pages. You can find it [here](https://baguette-dev.github.io)
+This is the code for my website. It is hosted on github pages. You can find it [here](https://mizkyosia.github.io/web/)
 Here are my different projects for the moment :
- - Chess --> [code](https://github.com/baguette-dev/baguette-dev.github.io/tree/main/Chess), [website](https://baguette-dev.github.io/Chess/)
+ - Chess --> [code](https://github.com/mizkyosia/web/tree/main/Chess), [website](https://mizkyosia.github.io/web/Chess/)
