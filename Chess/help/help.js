@@ -1,21 +1,12 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-    const buttons = document.querySelectorAll('.openButtons')
-    for(const button of buttons){
-        button.addEventListener('click',openList)
-    }
+    const bs = document.querySelectorAll('.openButtons')
+    for(const b of bs) b.addEventListener('click',openList)
     const links = document.querySelectorAll('a')
-    for(const link of links){
-        if(link.getAttribute('target') != '_blank') link.addEventListener('click',scrollTo)
-    }
-    const ibs = document.querySelectorAll('.open_image')
-    for(const ib of ibs) ib.addEventListener('click',openImage)
-    /**
-     * 
-     * @param {HTMLElementEventMap} event
-     * @this {HTMLElement}
-     */
-    function openList(event){
-        const list = document.getElementById(this.classList.item(0))
+    for(const link of links) if(link.getAttribute('target') != '_blank') link.addEventListener('click',scrollTo)
+    const is = document.querySelectorAll('img')
+    for(const i of is) i.addEventListener('click',openImage)
+    function openList(e){
+        const list = document.getElementById(this.classList[0])
         if(!list.classList.contains('closed')){
             list.classList.add('closed')
             this.style.transform = "rotate(180deg)"
@@ -24,23 +15,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             this.style.transform = "rotate(0deg)"
         }
     }
-    /**
-     * 
-     * @param {Event} event
-     * @this {HTMLAnchorElement}
-     */
-    function openLink(event){
-
-        event.preventDefault()
-        window.open(this.href,'_blank')
-    }
-    /**
-     * 
-     * @param {Event} event 
-     * @this {HTMLAnchorElement}
-     */
-    function scrollTo(event){
-        event.preventDefault()
+    function scrollTo(e){
+        e.preventDefault()
         const elem = document.querySelector(this.getAttribute('href'))
         window.scrollTo({
             top: elem.offsetTop,
@@ -48,12 +24,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             behavior: "smooth"
         })
     }
-    /**
-     * 
-     * @param {Event} event 
-     * @this {HTMLButtonElement}
-     */
-    function openImage(event){
-        window.open(this.children.item(0).getAttribute("src"),'_blank')
+    function openImage(e){
+        if(this.parentElement.tagName != 'BUTTON') window.open(this.getAttribute("src"),'_blank')
     }
 })

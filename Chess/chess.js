@@ -1,13 +1,13 @@
 const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 var ended = false;
 var currentMove = 0;
-var currentPlayer = -1;
-const moves = new Map();
-const lastMoves = new Map();
+const moves = [];
+const lastMoves = [];
 let selectedPiece;
 let originalPlate;
 let last;
 let direction;
+let took = 0;
 document.addEventListener("DOMContentLoaded", function (event) {
     originalPlate = document.getElementById('plate').innerHTML;
     this.addEventListener('keydown', function (e) {
@@ -124,7 +124,7 @@ function dropCell(cell) {
         if (ended) endgame();
     };
     cell.classList.remove('over');
-    currentPlayer == 0 ? currentPlayer = 1 : currentPlayer = 0;
+    currentMove%2  == 0 ? currentPlayer = 1 : currentPlayer = 0;
     return true;
 };
 function endgame() {
@@ -139,7 +139,6 @@ function endgame() {
 };
 function load() {
     currentMove = 0;
-    currentPlayer = -1;
     var file = this.files[0];
     var reader = new FileReader();
     reader.onload = function (progressEvent) {
@@ -160,20 +159,17 @@ function load() {
             return e.split(' ');
         });
         while (m[0] == '') m.shift();
-        for (let i = 0;
-            i < m.length;
-            i++) {
-            let z = m[i];
-            while (z[-1] == ' ') z.pop();
-            for (let x = 0;
-                x < z.length;
-                x++) {
-                if (x === 2) moves.set(`${i - 1}-2`, z[x]);
-                moves.set(`${i}-${x}`, z[x]);
-            };
-        };
+        moves[0] = 'start'
+        let x = 1
+        m.forEach(z =>{
+            z.forEach(y =>{
+                moves[x] = y
+                x++
+            })
+        })
         if (m.length > 0) document.getElementById('right_arrow').classList.add('allowed');
         setPlate();
+        //alert(`===========Attention=========== !\n\nLe visualisateur de fichier PGN contient encore des bugs. J'essaie de les supprimer le plus vite possible, mais il reste encore quelques soucis.`)
     };
     reader.readAsText(file);
 };
@@ -212,16 +208,16 @@ function move(p){
     draggedPiece = p;
     validCellsGame(p).forEach(c => c.classList.add('highlight'));
     if (p.classList[0] == 'Pawn' && y == (p.classList[2] == 'white_piece' ? 5 : 4)){
-        if(last == `${x+1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x+1},${y}`)?.childElementCount > 0) document.getElementById(`${x+1},${y+1}`).classList.add('highlight','ep')
+        if(last == `${x+1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x+1},${y}`)?.childElementCount > 0) document.getElementById(`${x+1},${y+(p.classList[2] == 'white_piece' ? 1 : -1)}`).classList.add('highlight','ep')
         if(last == `${x-1},${y+(p.classList[2] == 'white_piece' ? 2 : -2)}` && document.getElementById(`${x-1},${y}`)?.childElementCount > 0) document.getElementById(`${x-1},${y+(p.classList[2] == 'white_piece' ? 1 : -1)}`).classList.add('highlight','ep')
     } else if (!p.classList.contains('moved')) {
-        if (p.classList[0] == 'King') document.querySelectorAll(`.Rook.${p.classList[2]}`).forEach(c => {
+        if (p.classList[0] == 'King' && !p.classList.contains('check')) document.querySelectorAll(`.Rook.${p.classList[2]}`).forEach(c => {
             if (!c.classList.contains('moved') && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${c.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${c.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0){
                 c.parentElement.classList.add('highlight', 'castle')
                 direction = c.parentElement.id.split(',')[0] == '8'
             }
         })
-        else if (p.classList[0] == 'Rook') {
+        else if (p.classList[0] == 'Rook' && !document.querySelector(`.King.${p.classList[2]}`).classList.contains('check')) {
             if (!p.classList.contains('moved') && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '7' : '2'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0 && document.getElementById(`${p.parentElement.id.split(',')[0] == '8' ? '6' : '3'},${p.parentElement.id.split(',')[1] == '8' ? '8' : '1'}`).childElementCount == 0) document.querySelector(`.King.${p.classList[2]}`).parentElement.classList.add('highlight', 'castle')
             direction = p.parentElement.id.split(',')[0] == '8'
         }
@@ -230,19 +226,22 @@ function move(p){
 }
 function setPlate() {
     document.getElementById('plate').innerHTML = originalPlate;
+    let m = '<button class="moves" onclick="clickMove(0)">Début</button>'
+    for(let i = 1;i<moves.length;i++){
+        m += `\n<button class="moves" ${i != moves.length - 1 ? (i%2 == 1 ? 'style="background-color:whitesmoke;color:black;"' : 'style="background-color:black;color:whitesmoke;') : ''};" onclick="clickMove(${i})">${moves[i]}</button>`
+    }
+    document.getElementById('fileButton').outerHTML = `<div id="moves">${m}</div>` + document.getElementById('fileButton').outerHTML
     document.querySelectorAll('.piece').forEach(e => {
         e.draggable = false;
         e.classList.add('no-drag')
     });
     for (const p of document.querySelectorAll('.piece')) {
         if (p.parentElement.id != 'plate') {
-            p.setAttribute('style', `transform:translate(${parseInt(p.parentElement.id.split(',')[0] * 80 - 80)}px,${640 - (parseInt(p.parentElement.id.split(',')[1]) * 80)}px);
-`);
+            p.setAttribute('style', `transform:translate(${parseInt(p.parentElement.id.split(',')[0] * 80 - 80)}px,${640 - (parseInt(p.parentElement.id.split(',')[1]) * 80)}px);`);
             p.id = p.parentElement.id;
             p.parentElement.id = 'null';
         } else {
-            p.setAttribute('style', `transform:translate(${parseInt(p.id.split(',')[0]) * 80 - 80}px,${640 - (parseInt(p.id.split(',')[1]) * 80)}px);
-`);
+            p.setAttribute('style', `transform:translate(${parseInt(p.id.split(',')[0]) * 80 - 80}px,${640 - (parseInt(p.id.split(',')[1]) * 80)}px);`);
         };
         document.getElementById('plate').appendChild(p).classList.add('simulation');
     };
@@ -251,40 +250,26 @@ function setPlate() {
     };
 };
 function back(c) {
-    if (!c.contains('allowed') && c != null) return;
-    document.getElementById('right_arrow').classList.add('allowed');
-    let m = lastMoves.get(`${currentMove}-${currentPlayer}`);
-    lastMoves.delete(`${currentMove}-${currentPlayer}`);
-    if (currentMove === 0 && currentPlayer === 0) {
-        currentPlayer--;
-        document.getElementById('left_arrow').classList.remove('allowed');
-        setPlate();
-        return;
-    };
-    if (currentMove >= 0 && currentPlayer == 1) currentPlayer--
-    else if (currentMove >= 0 && currentPlayer == 0) {
-        currentMove--;
-        currentPlayer = 1
-    };
-    if (currentMove == 0 && currentPlayer == -1) document.getElementById('left_arrow').classList.remove('allowed');
-    if (currentMove < moves.length - 1 || (currentMove == moves.length - 1 && currentPlayer == 0)) document.getElementById('right_arrow').classList.add('allowed');
-    if (m.id === 'O-O-O') {
-        var a = document.getElementById(`3,${currentPlayer == 1 ? '1' : '8'}`);
-        var b = document.getElementById(`2,${currentPlayer == 1 ? '1' : '8'}`);
-        a.setAttribute('style', `transform:translate(320px,${currentPlayer == 1 ? 560 : 0}px);
-`);
-        b.setAttribute('style', `transform:translate(0px,${currentPlayer == 1 ? 560 : 0}px);
-`);
+    if (!c.contains('allowed')) return;
+    if(currentMove == moves.length - 1) document.getElementById('right_arrow').classList.add('allowed');
+    currentMove--
+    if(currentMove == 0) document.getElementById('left_arrow').classList.remove('allowed');
+    let m = lastMoves.pop();
+    if (m.id == '1/2-1/2' || m.id == '1-0' || m.id == '0-1'){
+        return document.getElementById('result').style.display = 'none'
+    } else if (m.id === 'O-O-O') {
+        var a = document.getElementById(`3,${currentMove%2 == 0 ? '1' : '8'}`);
+        var b = document.getElementById(`2,${currentMove%2 == 0 ? '1' : '8'}`);
+        a.setAttribute('style', `transform:translate(320px,${currentMove%2 == 0 ? 560 : 0}px);`);
+        b.setAttribute('style', `transform:translate(0px,${currentMove%2 == 0 ? 560 : 0}px);`);
         a.id = `5,${a.id.split(',')[1]}`;
         b.id = `1,${b.id.split(',')[1]}`;
         return;
     } else if (m.id === 'O-O') {
-        var a = document.getElementById(`7,${currentPlayer == 1 ? '1' : '8'}`);
-        var b = document.getElementById(`6,${currentPlayer == 1 ? '1' : '8'}`);
-        a.setAttribute('style', `transform:translate(320px,${currentPlayer == 1 ? 560 : 0}px);
-`);
-        b.setAttribute('style', `transform:translate(560px,${currentPlayer == 1 ? 560 : 0}px);
-`);
+        var a = document.getElementById(`7,${currentMove%2 == 0 ? '1' : '8'}`);
+        var b = document.getElementById(`6,${currentMove%2 == 0 ? '1' : '8'}`);
+        a.setAttribute('style', `transform:translate(320px,${currentMove%2 == 0 ? 560 : 0}px);`);
+        b.setAttribute('style', `transform:translate(560px,${currentMove%2 == 0 ? 560 : 0}px);`);
         a.id = `5,${a.id.split(',')[1]}`;
         b.id = `8,${b.id.split(',')[1]}`;
         return;
@@ -292,51 +277,56 @@ function back(c) {
     const p = document.getElementById(m.id);
     p.setAttribute('style', `transform:${m.position}`);
     p.id = m.lastId;
-    if (m.taken !== '') document.getElementById('plate').innerHTML += m.taken;
+    if (m.taken){
+        var z = document.getElementById(m.taken.toString())
+        z.style.display = '';
+        z.id = m.id
+        took--;
+    }
 };
 function next(c) {
-    if (!c.contains('allowed') && c != null) return;
-    if (currentMove === 0 && currentPlayer === -1) {
-        currentPlayer++;
+    if (!c.contains('allowed')) return;
+    if (currentMove === 0) {
         document.getElementById('left_arrow').classList.add('allowed');
     }
-    else if (currentMove >= 0 && currentPlayer == 0) currentPlayer++
-    else if (currentMove >= 0 && currentPlayer == 1) {
-        currentMove++;
-        currentPlayer = 0
-    };
-    if ((currentMove == Math.round(moves.size / 2) - 1 && currentPlayer % 2 == 1) || (currentMove == moves.length && currentPlayer == 0)) document.getElementById('right_arrow').classList.remove('allowed');
-    if (currentMove > 0 || (currentMove == 0 && currentPlayer == 1)) document.getElementById('left_arrow').classList.add('allowed');
-    let m = moves.get(`${currentMove}-${currentPlayer}`);
+    if(currentMove == 0) document.getElementById('left_arrow').classList.add('allowed');
+    currentMove++
+    if(currentMove == moves.length - 1) document.getElementById('right_arrow').classList.remove('allowed');
+    let m = moves[currentMove];
     let piece = 'Pawn';
     let oldColumn = 0;
     let oldLine = 0;
     var taken = false;
-    let pastPiece = { lastId: '', position: '', id: '', taken: '' };
+    let pastPiece = { lastId: '', position: '', id: '', taken: null };
     if (m === '1/2-1/2' || m === '1-0' || m === '0-1') {
-        return document.getElementById('right_arrow').classList.remove('allowed');
+        document.getElementById('right_arrow').classList.remove('allowed');
+        document.getElementById('wr').innerHTML = m.split('-')[0]
+        document.getElementById('br').innerHTML = m.split('-')[1]
+        var result = document.getElementById('result')
+        result.setAttribute('style',result.style.cssText.split('display')[0] + 'display: flex;')
+        pastPiece.id = m
     } else if (m.startsWith('O')) {
         if (m == 'O-O') {
-            var a = document.getElementById(`5,${currentPlayer == 1 ? '8' : '1'}`);
-            var b = document.getElementById(`8,${currentPlayer == 1 ? '8' : '1'}`);
+            var a = document.getElementById(`5,${currentMove%2 == 1 ? '8' : '1'}`);
+            var b = document.getElementById(`8,${currentMove%2 == 1 ? '8' : '1'}`);
             if (a && b) {
-                a.setAttribute('style', `transform:translate(480px,${currentPlayer == 1 ? 0 : 560}px);`);
-                b.setAttribute('style', `transform:translate(400px,${currentPlayer == 1 ? 0 : 560}px);`);
+                a.setAttribute('style', `transform:translate(480px,${currentMove%2 == 1 ? 0 : 560}px);`);
+                b.setAttribute('style', `transform:translate(400px,${currentMove%2 == 1 ? 0 : 560}px);`);
                 a.id = `7,${a.id.split(',')[1]}`;
                 b.id = `6,${b.id.split(',')[1]}`;
             };
         } else {
-            var a = document.getElementById(`5,${currentPlayer == 1 ? '8' : '1'}`);
-            var b = document.getElementById(`1,${currentPlayer == 1 ? '8' : '1'}`);
+            var a = document.getElementById(`5,${currentMove%2 == 1 ? '8' : '1'}`);
+            var b = document.getElementById(`1,${currentMove%2 == 1 ? '8' : '1'}`);
             if (a && b) {
-                a.setAttribute('style', `transform:translate(80px,${currentPlayer == 1 ? 0 : 560}px);`);
-                b.setAttribute('style', `transform:translate(160px,${currentPlayer == 1 ? 0 : 560}px);`);
+                a.setAttribute('style', `transform:translate(80px,${currentMove%2 == 1 ? 0 : 560}px);`);
+                b.setAttribute('style', `transform:translate(160px,${currentMove%2 == 1 ? 0 : 560}px);`);
                 a.id = `3,${a.id.split(',')[1]}`;
                 b.id = `2,${b.id.split(',')[1]}`;
             };
         };
         pastPiece.id = m;
-        lastMoves.set(`${currentMove}-${currentPlayer}`, pastPiece);
+        lastMoves.push(pastPiece);
         return;
     };
     if (m[0].match(/[BKQNRP]/)) {
@@ -369,26 +359,28 @@ function next(c) {
         let p = document.getElementById(`${oldColumn},${oldLine}`);
         pastPiece.position = p.style.transform;
         pastPiece.lastId = p.id;
-        p.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
-`);
+        p.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);`);
         if (taken) {
             var z = document.getElementById(`${column},${line}`);
-            pastPiece.taken = z.outerHTML;
-            z.remove();
+            took++;
+            pastPiece.taken = took;
+            z.style.display = 'none';
+            z.id = took.toString();
         };
         p.id = `${column},${line}`;
         pastPiece.id = p.id;
     } else if (oldColumn > 0 || oldLine > 0) {
-        for (const o of document.querySelectorAll(`.${piece}.${currentPlayer === 0 ? 'white' : 'black'}_piece`)) {
-            if ((o.id.split(',')[0] == oldColumn || o.id.split(',')[1] == oldLine) && isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentPlayer))) {
+        for (const o of document.querySelectorAll(`.${piece}.${currentMove%2 === 1 ? 'white' : 'black'}_piece`)) {
+            if ((o.id.split(',')[0] == oldColumn || o.id.split(',')[1] == oldLine) && isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentMove%2==1))) {
                 pastPiece.position = o.style.transform;
                 pastPiece.lastId = o.id;
-                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
-`);
+                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);`);
                 if (taken) {
                     var e = document.getElementById(`${column},${line}`);
-                    pastPiece.taken = e.outerHTML;
-                    e.remove();
+                    took++;
+                    pastPiece.taken = took;
+                    e.style.display = 'none';
+                    e.id = took.toString();
                 };
                 o.id = `${column},${line}`;
                 pastPiece.id = o.id;
@@ -396,16 +388,17 @@ function next(c) {
             };
         };
     } else {
-        for (const o of document.querySelectorAll(`.${piece}.${currentPlayer === 0 ? 'white' : 'black'}_piece`)) {
-            if (isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentPlayer))) {
+        for (const o of document.querySelectorAll(`.${piece}.${currentMove%2 === 1 ? 'white' : 'black'}_piece`)) {
+            if (isIn(`${column},${line}`, validCells(o.id.split(','), piece, currentMove%2==1))) {
                 pastPiece.position = o.style.transform;
                 pastPiece.lastId = o.id;
-                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);
-`);
+                o.setAttribute('style', `transform:translate(${column * 80 - 80}px,${640 - line * 80}px);`);
                 if (taken) {
                     var e = document.getElementById(`${column},${line}`);
-                    pastPiece.taken = e.outerHTML;
-                    e.remove();
+                    took++;
+                    pastPiece.taken = took;
+                    e.style.display = 'none';
+                    e.id = took.toString();
                 };
                 o.id = `${column},${line}`;
                 pastPiece.id = o.id;
@@ -413,8 +406,13 @@ function next(c) {
             };
         };
     };
-    lastMoves.set(`${currentMove}-${currentPlayer}`, pastPiece);
+    lastMoves.push(pastPiece);
 };
+function clickMove(number){
+    if(number == currentMove) return
+    while(number < currentMove) back(document.getElementById('left_arrow').classList)
+    while(number > currentMove) next(document.getElementById('right_arrow').classList)
+}
 function letter(l) {
     let x = 1;
     for (e of alphabet) {
@@ -547,10 +545,10 @@ function validCells(position, type, color) {
     } else if (type == 'Knight') {
         valid_cells = [`${x + 2},${y + 1}`, `${x + 1},${y + 2}`, `${x + 2},${y - 1}`, `${x - 2},${y + 1}`, `${x + 1},${y - 2}`, `${x - 1},${y + 2}`, `${x - 2},${y - 1}`, `${x - 1},${y - 2}`];
     } else {
-        valid_cells.push(`${x},${y + (color == 0 ? 1 : -1)}`);
-        if (document.getElementById(`${x + 1},${y + (color == 0 ? 1 : -1)}`)?.classList.contains(color == 0 ? 'black_piece' : 'white_piece')) valid_cells.push(`${x + 1},${y + (color == 0 ? 1 : -1)}`);
-        if (document.getElementById(`${x - 1},${y + (color == 0 ? 1 : -1)}`)?.classList.contains(color == 0 ? 'black_piece' : 'white_piece')) valid_cells.push(`${x - 1},${y + (color == 0 ? 1 : -1)}`);
-        if (y == (color == 0 ? 2 : 7)) valid_cells.push(`${x},${y + (color == 0 ? 2 : -2)}`);
+        valid_cells.push(`${x},${y + (color ? 1 : -1)}`);
+        if (document.getElementById(`${x + 1},${y + (color ? 1 : -1)}`)?.classList.contains(color ? 'black_piece' : 'white_piece')) valid_cells.push(`${x + 1},${y + (color ? 1 : -1)}`);
+        if (document.getElementById(`${x - 1},${y + (color ? 1 : -1)}`)?.classList.contains(color ? 'black_piece' : 'white_piece')) valid_cells.push(`${x - 1},${y + (color ? 1 : -1)}`);
+        if (y == (color ? 2 : 7)) valid_cells.push(`${x},${y + (color ? 2 : -2)}`);
     };
     return valid_cells;
 }

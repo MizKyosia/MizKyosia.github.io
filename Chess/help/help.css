@@ -15,7 +15,10 @@ body {
     flex-direction: column;
 }
 
-
+img
+{
+	cursor: pointer;
+}
 
 p
 {
@@ -102,7 +105,7 @@ a:hover
     color: white;
 	text-shadow: none;
 }
-#piece_liste li a 
+ul li ul li a 
 {
 	text-decoration: none;
 }
@@ -122,12 +125,6 @@ button img
 {
     width: 30px;
     transform: rotate(-90deg);
-}
-
-.open_image img
-{
-	transform: rotate(0deg);
-	width: auto;
 }
 
 .closed
