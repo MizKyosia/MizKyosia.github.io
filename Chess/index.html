@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div id="choice" class="popup" style="z-index: 2;">
+    <div id="choice" class="popup">
         <div style="display: flex; flex-direction: row;">
             <input id="Queen" type="image" class="choices" src="./Images/queen_black.png">
             <input id="Knight" type="image" class="choices" src="./Images/knight_black.png">
@@ -22,7 +22,7 @@
     </div>
     <div id="pause" class="popup">
         <div id="pause-container" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-            <button type="reset" id="restart" class="buttons" onclick="window.location.reload()">Recommencer</button>
+            <button type="reset" id="restart" class="buttons" onclick="loadPage()">Recommencer</button>
             <br>
             <br>
             <button type="button" id="continue" class="buttons"
@@ -33,7 +33,7 @@
         </div>
         <button type="menu" id="open" onclick="document.getElementById('pause').classList.add('appear');"><img
             src="./Images/arrow.png"
-            style="position: relative; width: 50px; height: 50px; right: 50px;z-index: 2;"></button>
+            style="position: relative; width: 50px; height: 50px; right: 50px;z-index: 4;"></button>
     </div>
     <h1>
         Jeu d'échecs
@@ -41,20 +41,23 @@
     <h2 id="announcement">
         Au tour du joueur <span id="player">blanc</span> !
     </h2>
+    <div id="info" style="display:flex; flex-direction: column; align-items: center;">
+
+    </div>
     <div style="display: flex; flex-direction: row-reverse;">
         <div style="display: flex; flex-direction: column; height: 670px;">
             <h3 id="black" class="players black_player"></h3>
             <h3 id="white" class="players white_player"></h3>
         </div>
         <div id="plate">
-            <span id="result" style="position: relative;height: 0px;width:641.08px;left:28.92px;margin: 0px;top:40%;display: flex;flex-direction: column;align-items: center;display: none;">
-                <p style="color: orangered;font-size: 50px;font-weight: bold;z-index: 10;">
+            <span id="result" style="position: relative;height: 0px;width:641.08px;left:28.92px;margin: 0px;top:40%;display: flex;flex-direction: column;align-items: center;z-index: 2;display: none;">
+                <p style="color: orangered;font-size: 50px;font-weight: bold;z-index: 2;">
                     Résultat :
                 </p>
-                <div style="display: flex;flex-direction: row;">
-                    <p id="wr" class="result" style="color: white;z-index: 10;">0</p>
-                    <p class="result" style="color: orangered;z-index: 10;">-</p>
-                    <p id="br" class="result" style="color: black;z-index: 10;">1</p>
+                <div style="display: flex;flex-direction: row;z-index: inherit;">
+                    <p id="wr" class="result" style="color: white;z-index: inherit;">0</p>
+                    <p class="result" style="color: orangered;z-index: inherit;">-</p>
+                    <p id="br" class="result" style="color: black;z-index: inherit;">1</p>
                 </div>
             </span>
             <div id="letters">
@@ -342,8 +345,9 @@
         <button class="arrows" id="right_arrow" onclick="next(this.classList)"><img class="arrows"
                 src="./Images/right_arrow.png"></button>
     </div>
-    <button id="fileButton" class="buttons" onclick="document.getElementById('file').click()">Choisir fichier
-        .PGN</button>
+    <button id="download" class="buttons" onclick="download()" style="display: none;">Télécharger PGN de la partie</button>
+    <a id="pgn" download="" style="display: none;"></a>
+    <button id="fileButton" class="buttons" onclick="document.getElementById('file').click()">Lecture de PGN</button>
     <input type='file' id="file" style="display:none" accept=".pgn">
 
 </body>

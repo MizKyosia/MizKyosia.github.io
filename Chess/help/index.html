@@ -79,16 +79,16 @@
                     Les échecs sont un jeu de plateau dans lequel deux joueurs contrôlant chacun une armée de pièces de jeu s'affrontent. Il est joué sur un plateau carré de 64 cases, réparties en 8 colonnes et 8 lignes.
                     Les origines du jeu d'échecs sont très anciennes, et on ne sait pas vraiment quand ni où il est apparu.
                     <br>
-                    Le plateau de jeu est composé de cases blanches et noires, mises en alternance. La couleur des cases n'apporte aucune modification au jeu, mais est un indicateur pour placer les pions en préparation de partie.
+                    Le plateau de jeu est composé de cases blanches et noires, mises en alternance. La couleur des cases n'apporte aucune modification au jeu, mais est un indicateur pour placer les pièces en préparation de partie.
                     En effet, les dames se trouvent toujours sur les cases de leur couleur, ce qui fait qu'elles se font face. Voici le placement d'un plateau au départ :
-                    <br><img src="./Images/plate.png" class="open-image" style="width: 400px;">
+                    <br><img src="./Images/plate.png" style="width: 400px;">
                     <br>
                     <br>
                     Le but du jeu est de mettre en <a href="#mat">échec et mat</a> le Roi adverse, en utilisant divers coups spéciaux et techniques de jeu. Pour cela, on utilise les différents mouvements propres à chaque pièce.
                     Ce jeu est considéré comme un sport dans plusieurs pays, dont la France. De nombreuses compétitions et championnats d'échecs ont lieu chaque année dans le monde.
                     <br>
                     <br>
-                    Durant une partie d'échecs, les joueurs bougent 1 seul pawn de leur armée en 1 mouvement, à tour de rôle. Il est interdit de bouger les pions de l'adversaire, et on ne peut pas passer son tour.
+                    Durant une partie d'échecs, les joueurs bougent 1 seul pawn de leur armée en 1 mouvement, à tour de rôle. Il est interdit de bouger les pièces de l'adversaire, de jouer deux tours de suite, de déplacer deux pièces lors du même tour (hors <a href="#moves">coups spéciaux</a>), ainsi que de passer son tour.
                     Pour les mouvements des différentes pièces : une pièce ne peut prendre qu'une pièce de la couleur opposée. Si une pièce arrive sur une case où se trouve une pièce de couleur opposée, elle la prend, l'enlève du plateau et se déplace sur la case. Si la case est vide, la pièce s'y déplace juste. Si la case contient déjà une pièce de la même couleur, la pièce choisie ne peut s'y déplacer.
                 </p>
             </li>
@@ -110,7 +110,7 @@
                             <br>
                             <br>
                             Exemple de déplacement de pion qui n'a pas encore été bougé : Les cases en vert sont celles sur lesquelles il peut se déplacer. La case en rouge est celle sur laquelle il pourrait se déplacer, si une pièce à capturer se mettait dessus.
-                            <br><img src="./Images/pawn_moves.png" class="open-image">
+                            <br><img src="./Images/pawn_moves.png">
                         </p>
                     </li>
                     <li>
@@ -119,11 +119,11 @@
                             Les tours sont des pièces assez utiles et polyvalentes dans les stratégies, du fait de leur mode de déplacement. Ces pièces sont situées le plus à droite et le plus à gauche du plateau, et il y en a 2 par armée.
                             <br>
                             <br>
-                            Le mouvement de déplacement des tours est assez simple. Les tours peuvent se déplacer à l'horizontale ou la verticale, d'autant de cases que le joueur souhaite, jusqu'à ce qu'un autre pion les bloque. Elles ne peuvent pas sauter au-dessus des pions, donc si une des lignes possibles croise un pion, la tour sera incapable de se déplacer après ce pion. Elles peuvent aussi effectuer un <a href="#castle">roque</a> sous certaines conditions.
+                            Le mouvement de déplacement des tours est assez simple. Les tours peuvent se déplacer à l'horizontale ou la verticale, d'autant de cases que le joueur souhaite, jusqu'à ce qu'une autre pièce les bloque. Elles ne peuvent pas sauter au-dessus des pièces, donc si une des lignes possibles croise une pièce, la tour sera incapable de se déplacer après cette pièce. Elles peuvent aussi effectuer un <a href="#castle">roque</a> sous certaines conditions.
                             <br>
                             <br>
                             Exemple de déplacement de tour : Les cases en vert sont celles sur lesquelles la tour peut se déplacer. Cependant, celle en rouge est inaccessible, car située derrière une pièce par rapport à la ligne de mouvement de la tour.
-                            <br><img src="./Images/rook_moves.png" class="open-image">
+                            <br><img src="./Images/rook_moves.png">
                         </p>
                     </li>
                     <li>
@@ -132,11 +132,11 @@
                             Les fous sont des pièces utiles aussi, au même titre que les Tours. Cependant, elles sont plus difficiles à utiliser, en raison de leur mode de déplacement. Néanmoins, elles restent un très bon atout dans des stratégies bien construites. Elles sont situées à côté du roi et de la reine, et il y en a 2 par armée, comme les tours.
                             <br>
                             <br>
-                            Le mouvement de déplacement des fous est, tout comme les tours, assez simple à comprendre. Ces pièces peuvent se déplacer sur n'importe quelle diagonale, et sont bloquées par les mêmes limitations que les tours, au niveau des pions sur les lignes.
+                            Le mouvement de déplacement des fous est, tout comme les tours, assez simple à comprendre. Ces pièces peuvent se déplacer sur n'importe quelle diagonale, et sont bloquées par les mêmes limitations que les tours, au niveau des pièces sur les lignes.
                             <br>
                             <br>
                             Exemple de déplacement de fou : Les cases en vert sont celles sur lesquelles le fou peut se déplacer. Cependant, celle en rouge est inaccessible, car située derrière une pièce par rapport à la ligne de mouvement du fou.
-                            <br><img src="./Images/bishop_moves.png" class="open-image">
+                            <br><img src="./Images/bishop_moves.png">
                         </p>
                     </li>
                     <li>
@@ -145,11 +145,11 @@
                             Les cavaliers sont des pièces très utiles, car elles possèdent deux avantages majeurs : ils peuvent sauter au-dessus d'autres pièces sans devoir les prendre, et possèdent un schéma de déplacement qui n'est ni diagonal ni horizontal ni vertical. Ces pièces peuvent donc mettre en danger des pièces ennemies, sans être mises en danger elles-mêmes par ces pièces ennemies. Comme les tours et les fous, il y en a 2 par armée, et chacun d'eux est situé entre un fou et une tour.
                             <br>
                             <br>
-                            Le mouvement de déplacement des cavaliers est en L. Ils peuvent avancer de 2 cases dans une direction horizontale ou verticale, et de 1 case dans l'axe perpendiculaire à l'axe des 3 cases choisies. Cependant, le cavalier peut sauter par-dessus toutes les pièces sur les cases qu'il traverse, sans les prendre ou se faire prendre par ces pièces. Il suffit juste que la case d'arrivée ne comporte pas un pion de la même couleur que le cavalier pour qu'il s'y déplace.
+                            Le mouvement de déplacement des cavaliers est en L. Ils peuvent avancer de 2 cases dans une direction horizontale ou verticale, et de 1 case dans l'axe perpendiculaire à l'axe des 3 cases choisies. Cependant, le cavalier peut sauter par-dessus toutes les pièces sur les cases qu'il traverse, sans les prendre ou se faire prendre par ces pièces. Il suffit juste que la case d'arrivée ne comporte pas une pièce de la même couleur que le cavalier pour qu'il s'y déplace.
                             <br>
                             <br>
                             Exemple de déplacement de cavalier : Les cases en vert sont celles sur lesquelles le cavalier peut se déplacer.
-                            <br><img src="./Images/horse_moves.png" class="open-image">
+                            <br><img src="./Images/horse_moves.png">
                         </p>
                     </li>
                     <li>
@@ -158,11 +158,11 @@
                             Les dames sont les pièces les plus puissantes du jeu d'échecs. Elles sont très polyvalentes, et si bien placées peuvent dominer une grande partie du plateau. Cependant, attention à ne pas mal l'utiliser, car cette pièce a tout de même des lacunes. Par exemple, elle peut être mise en danger par un cavalier, sans mettre elle-même en danger ce cavalier. De plus, c'est généralement cette pièce qui est la première cible dans les parties d'échecs, il ne faut donc pas l'éloigner trop des autres pièces même si elle peut se déplacer loin, car elle se retrouverait en danger. Chaque armée possède 1 reine, à côté du roi et d'un fou. La reine est toujours sur une case de sa couleur lors de la mise en place.
                             <br>
                             <br>
-                            Le mouvement de déplacement des dames est basiquement une fusion du déplacement des tours et des fous. En effet, une dame peut se déplacer à la verticale, à l'horizontale et en diagonale. Elle est soumise aux mêmes limitations en déplacement que les fous et les tours, c'est-à-dire qu'elle ne peut passer outre les pions sur la ligne sur laquelle elle se déplace.
+                            Le mouvement de déplacement des dames est basiquement une fusion du déplacement des tours et des fous. En effet, une dame peut se déplacer à la verticale, à l'horizontale et en diagonale. Elle est soumise aux mêmes limitations en déplacement que les fous et les tours, c'est-à-dire qu'elle ne peut passer outre les pièces sur la ligne sur laquelle elle se déplace.
                             <br>
                             <br>
                             Exemple de déplacement de dame : Les cases en vert sont celles sur lesquelles la dame peut se déplacer. Cependant, celle en rouge est inaccessible, car située derrière une pièce par rapport à la ligne de mouvement de la dame.
-                            <br><img src="./Images/queen_moves.png" class="open-image">
+                            <br><img src="./Images/queen_moves.png">
                         </p>
                     </li>
                     <li>
@@ -175,7 +175,7 @@
                             <br>
                             <br>
                             Exemple de déplacement du roi : Les cases en vert sont celles sur lesquelles le roi peut se déplacer.
-                            <br><img src="./Images/king_moves.png" class="open-image">
+                            <br><img src="./Images/king_moves.png">
                         </p>
                     </li>
                 </ul>
@@ -186,7 +186,7 @@
                     <li>
                         <h3 id="castle">Roque</h3>
                         <p>
-                            Le roque est un coup spécial déplacant deux pièces : une tour et le roi. La tour avance de deux cases vers le roi, et ce dernier vient se placer derrière la tour par rapport à son ancienne position.
+                            Le roque est un coup spécial déplacant deux pièces : une <a href="#rook">tour</a> et le <a href="#king">roi</a>. La tour avance de deux cases vers le roi, et ce dernier vient se placer derrière la tour par rapport à son ancienne position.
                             <br>
                             <br>
                             Ce coup possède cependant des limitations, ainsi que des conditions afin d'être réalisé :
@@ -207,7 +207,7 @@
                     <li>
                         <h3 id="en-passant">En passant</h3>
                         <p>
-                            La prise en passant est une prise spéciale ne pouvant être réalisée qu'avec des pions. Prenons un pion noir et un pion blanc. Le pion noir n'a pas bougé, tandis que le pion blanc se trouve 2 cases devant le pion noir, et 1 case sur le côté. Si le pion noir effectue son premier déplacement sur deux cases, alors au coup d'après (et seulement au coup d'après) le pion blanc peut effectuer une prise en diagonale en arrivant derrière le pion noir et en prenant tout de même celui-ci, comme si ce dernier n'avait avancé que d'une case. Évidemment, ce coup est aussi possible avec les couleurs inverses, mais il n'est possible qu'avec des pions
+                            La prise en passant est une prise spéciale ne pouvant être réalisée qu'avec des <a href="#pawn">pions</a>. Prenons un pion noir et un pion blanc. Le pion noir n'a pas bougé, tandis que le pion blanc se trouve 2 cases devant le pion noir, et 1 case sur le côté. Si le pion noir effectue son premier déplacement sur deux cases, alors au coup d'après (et seulement au coup d'après) le pion blanc peut effectuer une prise en diagonale en arrivant derrière le pion noir et en prenant tout de même celui-ci, comme si ce dernier n'avait avancé que d'une case. Évidemment, ce coup est aussi possible avec les couleurs inverses, mais il n'est possible qu'avec des pions
                             <br>
                             <br>
                             Pour réaliser ce coup dans le jeu sur ce site, déplacez le pion qui peut faire une prise en passant sur la case jaune qui apparaît lorsque vous le déplacez
@@ -215,14 +215,25 @@
                             <br>
                             Exemple de prise en passant :
                             <br>
-                            <img src="./Images/en-passant.gif" class="open-image">
+                            <img src="./Images/en-passant.gif">
                         </p>
                     </li>
                     <br>
                     <li>
                         <h3 id="promotion">Promotion</h3>
                         <p>
-                            La promotion est un coup spécial ne pouvant être réalisé qu'avec un pion. Lorsqu'un pion d'une couleur atteint l'autre côté du plateau de jeu (dans le camp adverse, donc), il est possible de promouvoir la pièce, c'est-à-dire de l'enlever pour mettre à la place un <a href="#bishop">fou</a>, une <a href="#rook">tour</a>, un <a href="#cavalier">cavalier</a> ou une <a href="#queen">dame</a>. 
+                            La promotion est un coup spécial ne pouvant être réalisé qu'avec un <a href="#pawn">pion</a>. Lorsqu'un pion d'une couleur atteint l'autre côté du plateau de jeu (dans le camp adverse, donc), il est possible de promouvoir la pièce, c'est-à-dire de l'enlever pour mettre à la place un <a href="#bishop">fou</a>, une <a href="#rook">tour</a>, un <a href="#cavalier">cavalier</a> ou encore une <a href="#queen">dame</a>, indépendamment du nombre de ces pièces déjà présentes sur le plateau de jeu.
+                            <br>
+                            <br>
+                            Dans ce jeu, lorsqu'un pion arrive de l'autre côté du plateau, un popup apparaîtra pour vous permettre de choisir la pièce qui remplacera le pion.
+                        </p>
+                    </li>
+                    <li>
+                        <h3 id="check">
+                            Échec
+                        </h3>
+                        <p>
+                            L'échec est un coup spécial pouvant être 
                         </p>
                     </li>
                 </ul>

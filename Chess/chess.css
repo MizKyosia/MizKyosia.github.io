@@ -2,6 +2,7 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	/* z-index: inherit; */
 }
 
 body {
@@ -55,12 +56,17 @@ a
 	background:rgb(60, 60, 60);
 	height:7.5vh;
 	width: 28vh;
+	max-width: 90vw;
+	width: max-content;
+	min-width: 25vh;
 	cursor: pointer;
 	position: relative;
 	transition: all .4s;
 	z-index: 3;
 	border-radius: 20vh;
 	border: transparent;
+	padding: 0px 20px;
+	z-index: inherit;
 }
 
 .buttons:hover
@@ -132,7 +138,7 @@ button.arrows.allowed:hover
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	z-index: 2;
+	z-index: 3;
 }
 
 .popup.appear
@@ -328,7 +334,24 @@ button.arrows.allowed:hover
 
 .moves:hover
 {
-	background-color:lighter;
+	filter: brightness(80%);
+}
+
+.white_move
+{
+	background-color: whitesmoke;
+	color: black;
+}
+
+.black_move
+{
+	background-color: black;
+	color: whitesmoke;
+}
+
+.not-allowed
+{
+	background-color: red;
 }
 
 .result
