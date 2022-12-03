@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chess - 2 Joueurs</title>
+    <link rel="stylesheet" href="./chess.css" />
+    <link rel="icon" href="../Images/king_black.png" type="image/png" />
+    <script type="text/javascript" src="./2p.js"></script>
+</head>
+
+<body>
+    <div id="choice" class="popup">
+        <div style="display: flex; flex-direction: row;">
+            <input id="Queen" type="image" class="choices" src="../Images/queen_black.png">
+            <input id="Knight" type="image" class="choices" src="../Images/knight_black.png">
+        </div>
+        <div style="display: flex; flex-direction: row;">
+            <input id="Bishop" type="image" class="choices" src="../Images/bishop_black.png">
+            <input id="Rook" type="image" class="choices" src="../Images/rook_black.png">
+        </div>
+    </div>
+    <div id="pause" class="popup">
+        <div id="pause-container" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+            <button type="reset" id="restart" class="buttons" onclick="loadPage()">Recommencer</button>
+            <br>
+            <br>
+            <button type="button" id="continue" class="buttons"
+                onclick="document.getElementById('pause').classList.remove('appear')">Continuer</button>
+            <br>
+            <br>
+            <button type="button" id="helpButton" class="buttons" onclick="window.open('./help','_blank')">Aide</button>
+        </div>
+        <button type="menu" id="open" onclick="document.getElementById('pause').classList.add('appear');"><img
+            src="../Images/arrow.png"
+            style="position: relative; width: 50px; height: 50px; right: 50px;z-index: 4;"></button>
+    </div>
+    <h1>
+        Jeu d'échecs
+    </h1>
+    <h2 id="announcement">
+        Au tour du joueur <span id="player">blanc</span> !
+    </h2>
+    <div id="info" style="display:flex; flex-direction: column; align-items: center;">
+
+    </div>
+    <div style="display: flex; flex-direction: row-reverse;">
+        <div style="display: flex; flex-direction: column; height: 670px;">
+            <h3 id="black" class="players black_player"></h3>
+            <h3 id="white" class="players white_player"></h3>
+        </div>
+        <div id="plate">
+            <span id="result" style="position: relative;height: 0px;width:641.08px;left:28.92px;margin: 0px;top:40%;display: flex;flex-direction: column;align-items: center;z-index: 2;display: none;">
+                <p style="color: orangered;font-size: 50px;font-weight: bold;z-index: 2;">
+                    Résultat :
+                </p>
+                <div style="display: flex;flex-direction: row;z-index: inherit;">
+                    <p id="wr" class="result" style="color: white;z-index: inherit;">0</p>
+                    <p class="result" style="color: orangered;z-index: inherit;">-</p>
+                    <p id="br" class="result" style="color: black;z-index: inherit;">1</p>
+                </div>
+            </span>
+            <div id="letters">
+                <span style="width: 28.92px; height: 20px;"></span>
+                <div class="letter">
+                    <p>A</p>
+                </div>
+                <div class="letter">
+                    <p>B</p>
+                </div>
+                <div class="letter">
+                    <p>C</p>
+                </div>
+                <div class="letter">
+                    <p>D</p>
+                </div>
+                <div class="letter">
+                    <p>E</p>
+                </div>
+                <div class="letter">
+                    <p>F</p>
+                </div>
+                <div class="letter">
+                    <p>G</p>
+                </div>
+                <div class="letter">
+                    <p>H</p>
+                </div>
+            </div>
+            <div id="line_8" class="lines">
+                <p>8</p>
+                <div class="white_cell cell" id="1,8">
+                    <img class="Rook piece black_piece" id="black_rook_1" draggable="true"
+                        src="../Images/rook_black.png">
+                </div>
+                <div class="black_cell cell" id="2,8">
+                    <img class="Knight piece black_piece" id="black_knight_1" draggable="true"
+                        src="../Images/knight_black.png">
+                </div>
+                <div class="white_cell cell" id="3,8">
+                    <img class="Bishop piece black_piece" id="black_bishop_1" draggable="true"
+                        src="../Images/bishop_black.png">
+                </div>
+                <div class="black_cell cell" id="4,8">
+                    <img class="Queen piece black_piece" id="black_queen" draggable="true"
+                        src="../Images/queen_black.png">
+                </div>
+                <div class="white_cell cell" id="5,8">
+                    <img class="King piece black_piece" id="black_king" draggable="true" src="../Images/king_black.png">
+                </div>
+                <div class="black_cell cell" id="6,8">
+                    <img class="Bishop piece black_piece" id="black_bishop_2" draggable="true"
+                        src="../Images/bishop_black.png">
+                </div>
+                <div class="white_cell cell" id="7,8">
+                    <img class="Knight piece black_piece" id="black_knight_2" draggable="true"
+                        src="../Images/knight_black.png">
+                </div>
+                <div class="black_cell cell" id="8,8">
+                    <img class="Rook piece black_piece" id="black_rook_2" draggable="true"
+                        src="../Images/rook_black.png">
+                </div>
+            </div>
+            <div id="line_7" class="lines">
+                <p>7</p>
+                <div class="black_cell cell" id="1,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_1" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="white_cell cell" id="2,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_2" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="black_cell cell" id="3,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_3" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="white_cell cell" id="4,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_4" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="black_cell cell" id="5,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_5" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="white_cell cell" id="6,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_6" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="black_cell cell" id="7,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_7" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+                <div class="white_cell cell" id="8,7">
+                    <img class="Pawn piece black_piece" id="black_pawn_8" draggable="true"
+                        src="../Images/pawn_black.png">
+                </div>
+            </div>
+            <div id="line_6" class="lines">
+                <p>6</p>
+                <div class="white_cell cell" id="1,6">
+
+                </div>
+                <div class="black_cell cell" id="2,6">
+
+                </div>
+                <div class="white_cell cell" id="3,6">
+
+                </div>
+                <div class="black_cell cell" id="4,6">
+
+                </div>
+                <div class="white_cell cell" id="5,6">
+
+                </div>
+                <div class="black_cell cell" id="6,6">
+
+                </div>
+                <div class="white_cell cell" id="7,6">
+
+                </div>
+                <div class="black_cell cell" id="8,6">
+
+                </div>
+            </div>
+            <div id="line_5" class="lines">
+                <p>5</p>
+                <div class="black_cell cell" id="1,5">
+
+                </div>
+                <div class="white_cell cell" id="2,5">
+
+                </div>
+                <div class="black_cell cell" id="3,5">
+
+                </div>
+                <div class="white_cell cell" id="4,5">
+
+                </div>
+                <div class="black_cell cell" id="5,5">
+
+                </div>
+                <div class="white_cell cell" id="6,5">
+
+                </div>
+                <div class="black_cell cell" id="7,5">
+
+                </div>
+                <div class="white_cell cell" id="8,5">
+
+                </div>
+            </div>
+            <div id="line_4" class="lines">
+                <p>4</p>
+                <div class="white_cell cell" id="1,4">
+
+                </div>
+                <div class="black_cell cell" id="2,4">
+
+                </div>
+                <div class="white_cell cell" id="3,4">
+
+                </div>
+                <div class="black_cell cell" id="4,4">
+
+                </div>
+                <div class="white_cell cell" id="5,4">
+
+                </div>
+                <div class="black_cell cell" id="6,4">
+
+                </div>
+                <div class="white_cell cell" id="7,4">
+
+                </div>
+                <div class="black_cell cell" id="8,4">
+
+                </div>
+            </div>
+            <div id="line_3" class="lines">
+                <p>3</p>
+                <div class="black_cell cell" id="1,3">
+
+                </div>
+                <div class="white_cell cell" id="2,3">
+
+                </div>
+                <div class="black_cell cell" id="3,3">
+
+                </div>
+                <div class="white_cell cell" id="4,3">
+
+                </div>
+                <div class="black_cell cell" id="5,3">
+
+                </div>
+                <div class="white_cell cell" id="6,3">
+
+                </div>
+                <div class="black_cell cell" id="7,3">
+
+                </div>
+                <div class="white_cell cell" id="8,3">
+
+                </div>
+            </div>
+            <div id="line_2" class="lines">
+                <p>2</p>
+                <div class="white_cell cell" id="1,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_1" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="black_cell cell" id="2,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_2" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="white_cell cell" id="3,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_3" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="black_cell cell" id="4,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_4" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="white_cell cell" id="5,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_5" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="black_cell cell" id="6,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_6" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="white_cell cell" id="7,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_7" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+                <div class="black_cell cell" id="8,2">
+                    <img class="Pawn piece white_piece" id="white_pawn_8" draggable="true"
+                        src="../Images/pawn_white.png">
+                </div>
+            </div>
+            <div id="line_1" class="lines">
+                <p>1</p>
+                <div class="black_cell cell" id="1,1">
+                    <img class="Rook piece white_piece" id="white_rook_1" draggable="true"
+                        src="../Images/rook_white.png">
+                </div>
+                <div class="white_cell cell" id="2,1">
+                    <img class="Knight piece white_piece" id="white_knight_1" draggable="true"
+                        src="../Images/knight_white.png">
+                </div>
+                <div class="black_cell cell" id="3,1">
+                    <img class="Bishop piece white_piece" id="white_bishop_1" draggable="true"
+                        src="../Images/bishop_white.png">
+                </div>
+                <div class="white_cell cell" id="4,1">
+                    <img class="Queen piece white_piece" id="white_queen" draggable="true"
+                        src="../Images/queen_white.png">
+                </div>
+                <div class="black_cell cell" id="5,1">
+                    <img class="King piece white_piece" id="white_king" draggable="true" src="../Images/king_white.png">
+                </div>
+                <div class="white_cell cell" id="6,1">
+                    <img class="Bishop piece white_piece" id="white_bishop_2" draggable="true"
+                        src="../Images/bishop_white.png">
+                </div>
+                <div class="black_cell cell" id="7,1">
+                    <img class="Knight piece white_piece" id="white_knight_2" draggable="true"
+                        src="../Images/knight_white.png">
+                </div>
+                <div class="white_cell cell" id="8,1">
+                    <img class="Rook piece white_piece" id="white_rook_2" draggable="true"
+                        src="../Images/rook_white.png">
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; height: 670px;">
+            <h3 id="move_black" class="players black_player"></h3>
+            <h3 id="move_white" class="players white_player"></h3>
+        </div>
+    </div>
+    <div style="display: flex;flex-direction: row;">
+        <button class="arrows" id="left_arrow" onclick="back(this.classList)"><img class="arrows"
+                src="../Images/left_arrow.png"></button>
+        <button class="arrows" id="right_arrow" onclick="next(this.classList)"><img class="arrows"
+                src="../Images/right_arrow.png"></button>
+    </div>
+    <button id="download" class="buttons" onclick="download()" style="display: none;">Télécharger PGN de la partie</button>
+    <a id="pgn" download="" style="display: none;"></a>
+    <button id="fileButton" class="buttons" onclick="document.getElementById('file').click()">Lecture de PGN</button>
+    <input type='file' id="file" style="display:none" accept=".pgn">
+
+</body>
+
+</html>
