@@ -1,0 +1,45 @@
+.textContainer {
+    transition: none;
+    height: 50vh;
+    border: 2px solid orangered;
+    background-color: rgb(25, 25, 25);
+    border-radius: 25px;
+    padding: 10px;
+    width: 37.5vw;
+}
+
+textarea {
+    border: none;
+    resize: none;
+    background-color: transparent;
+    height: 100%;
+    width: 100%;
+    font-size: 4vh;
+    color: white;
+}
+
+textarea:focus-visible {
+    border: none;
+    outline: none;
+}
+
+#translate {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.arrow {
+    margin: 0px;
+    padding: 5px;
+    background: none;
+}
+
+.arrow:hover {
+    transform: none;
+    background-color: #55555555;
+}
+
+.arrow > img {
+    width: 40px;
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="./index.css">
+    <title>Morse Coder & Decoder</title>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <h1>Morse Coder & Decoder</h1>
+    <svg width="90%" height="60px">
+        <rect width="100%" height="2" fill="grey" style="transform: translate(0%,10px);" />
+        <rect width="90%" height="2" fill="grey" style="transform: translate(5%,20px);" />
+        <rect width="80%" height="2" fill="grey" style="transform: translate(10%,30px);" />
+        <rect width="70%" height="2" fill="grey" style="transform: translate(15%,40px);" />
+    </svg>
+    <div id="translate">
+        <div class="textContainer">
+            <textarea id="text" placeholder="Text goes here"></textarea>
+        </div>
+        <div style="display: flex; flex-direction: column; margin: 10px; height: 100px;">
+            <button id="txtBtn" class="arrow" onclick="toText()"><img src="./arrow.svg" style="transform: rotate(90deg);"></button>
+            <button id="mrsBtn" class="arrow" onclick="toMorse()"><img src="./arrow.svg" style="transform: rotate(-90deg);"></button>
+        </div>
+        <div class="textContainer">
+            <textarea id="morse" placeholder="Morse code goes here"></textarea>
+        </div>
+    </div>
+</body>
+
+</html>
