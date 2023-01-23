@@ -32,7 +32,7 @@ function toMorse() {
         error = false;
         alert('!!! Some characters given for translation were not valid !!!');
     }
-    document.getElementById('morse').value = o.replace(/ *$/,'');
+    document.getElementById('morse').value = o.replace(/( *$|\n)/g,'');
 }
 
 function toText() {
@@ -50,7 +50,7 @@ function toText() {
         error = false;
         alert('!!! Some characters given for translation were not valid !!!');
     }
-    document.getElementById('text').value = o.replace(/ *$/,'');
+    document.getElementById('text').value = o.replace(/( *$|\n)/g,'');
 }
 
 function findLetter(c) {
