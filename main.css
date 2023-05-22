@@ -1,5 +1,5 @@
 * {
-	transition: all 1s;
+	/*transition: all 1s;*/
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -53,7 +53,7 @@ a
 	text-decoration: none;
 }
 
-button
+button.classic
 {
 	font-size: 1.5rem;
 	background:rgb(60, 60, 60);
@@ -69,7 +69,7 @@ button
 	transition: all .4s;
 }
 
-button:hover
+button.classic:hover
 {
 	transform: scale(110%);
 	background-color: rgb(85, 85, 85);

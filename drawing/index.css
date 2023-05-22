@@ -14,11 +14,17 @@ body {
     border-style: solid;
     margin: 25px;
     max-width: max-content;
+    padding: none;
 }
 
 #drawing {
-    background-color: rgba(200, 200, 200, 0.5);
+    cursor: none;
+    background:url(./Images/transparent-bg.png) repeat top left;
     margin-bottom: 0px;
+}
+
+#drawingPreview {
+    position: absolute;
 }
 
 #colors {
@@ -26,24 +32,53 @@ body {
     grid-template-columns:repeat(17,1fr);
 }
 
+#colors > legend {
+    display: flex;
+    flex-direction: row;
+}
+
+#colors.action0 > .color {
+    cursor: pointer;
+}
+
+#colors.action1 > .color {
+    cursor:copy;
+}
+
+#colors.action2 > .color {
+    cursor:cell ;
+}
+
 #settings {
+    animation: none;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
+.shape {
+    stroke-width: 5px;
+    stroke: white;
+    fill: white;
+}
+
+.hollow {
+    fill: none;
+}
+
 .color {
-    display:inline;
+    display:flex;
     width: 50px;
     height: 50px;
-    border: solid orangered 1px;
+    border: solid orangered 2px;
     border-radius: 100%;
     margin: 5px;
-    cursor: pointer;
+    background-image: url(./Images/transparent-bg.png);
 }
 
 .selectedColor {
+    pointer-events: none;
     color: white;
     border-style: solid;
     background-color: orangered;
@@ -51,8 +86,56 @@ body {
     z-index: 2;
 }
 
-svg {
-    margin: 0px;
+.color.editing {
+    border-color: lime;
+}
+
+#line {
+    animation: none;
+}
+
+svg:has(#cursor) {
+    z-index: 3;
+    pointer-events: none;
+    position: absolute;
+    margin: -20px;
+}
+
+#cursor {
+    z-index: 3;
+    pointer-events: none;
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+#colorPicker {
+    position: absolute;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+fieldset {
+    border: none;
+    border-top: 2px solid orangered;
+}
+
+.colorOption {
+    padding: none;
+    margin: 2px;
+    border: none;
+    background: none;
+}
+
+.colorOption.selected {
+    background-color: orangered;
+}
+
+#editColor {
+    height: 10px;
+    bottom: 5px;
+    position: absolute;
+    left: 0px;
 }
 
 @media only screen and (pointer: coarse) and (hover: none)
@@ -62,4 +145,8 @@ svg {
         width: 125px;
         height: 125px;
     }
+}
+
+:fullscreen {
+    overflow-y: scroll;
 }
