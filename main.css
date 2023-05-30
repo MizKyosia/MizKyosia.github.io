@@ -207,3 +207,31 @@ button.link:hover {
 .menu.closed > h6 > button {
 	transform: rotate(90deg);
 }
+
+/* Code highlight section */
+
+code span { margin: 0px;}
+code .ht { color: cornflowerblue;}
+code .ha { color: yellow;}
+code .s { color: green;}
+code .i { color:aqua;}
+code .kw { color: blueviolet;}
+code .gv { color:crimson;}
+code .v { color:darkcyan;}
+code .o { color:rgb(86, 86, 86);}
+code .c { color: red;}
+code .f { color: orange;}
+code .p { color: purple;}
+code {
+	border: 1px solid black;
+	white-space: pre;
+	text-align: left;
+	display: inline;
+	padding: 10px;
+	margin: 5px;
+	border-radius: 15px;
+	background:#101010;
+	overflow: visible;
+	line-height: inherit;
+	word-wrap: normal;
+}
