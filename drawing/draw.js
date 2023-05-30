@@ -7,11 +7,14 @@ var cursor, color = -1, previousPos, previousColor, startDrawPos, pen = 0, color
 document.addEventListener('DOMContentLoaded', () => {
     ctx = document.getElementById('drawing').getContext('2d');
     pctx = document.getElementById('drawingPreview').getContext('2d');
-    cursor = document.getElementById('cursor');
+    this.cursor = document.getElementById('cursor');
     colorPicker = document.getElementById('colorPicker');
     changePenSize(5)
     resizeCanvas();
     ctx.lineCap = 'round';
+    document.addEventListener('keydown', (e) => {
+        //(e.key == 'Enter' && editedColor) ? stopEdit() : console.log(e.key);
+    });
     document.getElementById('addColor').addEventListener('click', (e) => addColor(e));
     document.addEventListener('auxclick', (e) => false);
     document.addEventListener('contextmenu', (e) => {
@@ -35,34 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
         color = -1;
         return false;
     });
-    ctx.canvas.addEventListener('mouseenter', (e) => cursor.parentElement.style.display = '');
-    ctx.canvas.addEventListener('mouseleave', (e) => cursor.parentElement.style.display = 'none');
+    ctx.canvas.addEventListener('mouseenter', (e) => this.cursor.parentElement.style.display = '');
+    ctx.canvas.addEventListener('mouseleave', (e) => this.cursor.parentElement.style.display = 'none');
     ctx.canvas.addEventListener('mousemove', (e) => {
-        cursor.parentElement.style.left = `${e.pageX}px`;
-        cursor.parentElement.style.top = `${e.pageY}px`;
+        this.cursor.parentElement.style.left = `${e.pageX}px`;
+        this.cursor.parentElement.style.top = `${e.pageY}px`;
         if (color >= 0) draw(e);
     });
 })
-
-/**
- * @param {number} max The maximum number
- * @param {number} min The minimum number
- * @returns {number} A random number in range [min;max]
- */
-function randomBetween(max, min = 0) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
-
-const hexDigits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-/**
- * @param {boolean} alpha Should the alpha channel be randomized too ?
- * @returns {string} A random hex color code
- */
-function randomHexColor(a = false) {
-    let s = '#';
-    for (let i = 0; i < (a ? 8 : 6); i++) s += hexDigits[randomBetween(15)];
-    return s;
-}
 
 function fsElem() {
     return (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
@@ -86,7 +69,7 @@ function offset(el) {
     var rect = el.getBoundingClientRect(),
         scrollLeft = window.scrollX || document.documentElement.scrollLeft,
         scrollTop = window.scrollY || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft, right: rect.right + scrollLeft, bottom: rect.bottom + scrollTop}
 }
 
 function stopEdit() {
@@ -106,7 +89,6 @@ function changeOption(e,o){
     document.getElementById('colors').className = `action${colorOption}`;
     document.querySelector('.colorOption.selected').classList.remove('selected');
     e.classList.add('selected');
-    console.log(e,colorOption);
 }
 
 function startEdit(e,a){
@@ -119,7 +101,6 @@ function startEdit(e,a){
 }
 
 function colorAction(e){
-    console.log(colorOption);
     switch(colorOption) {
         case 0: return selectColor(e);
         case 1: return startEdit(e,e.target);
@@ -161,7 +142,7 @@ function changePen(p) {
 function changePenSize(v) {
     ctx.lineWidth = v;
     for (var e of document.querySelectorAll('.shape')) e.style.strokeWidth = v;
-    cursor.setAttribute('r', v / 2);
+    this.cursor.setAttribute('r', v / 2);
 }
 
 function changeShapes(f) {
@@ -182,7 +163,6 @@ function draw(e) {
         case 0: return drawBase(e);
         case 1: return drawRectangle(e)
     }
-    console.log('problem')
     return false;
 }
 

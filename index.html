@@ -1,17 +1,94 @@
 <html>
-    <head>
-        <title>Web Projects</title>
-        <link rel="stylesheet" href="./main.css">
-        <link rel="icon" href="./icon.png">
-        <script src="./index.js"></script>
-    </head>
-    <body>
-        <h1 id="title"></h1>
-        <div id="container">
-            <h2>I'm a french guy, learning to code. For today, most of my works are in french, but i'll make an english version as soon as i can. Hope you'll enjoy what i've done</h2>
-            <button onclick="window.open('https:\/\/github.com/mizkyosia/web','_blank')">Repo on GitHub</button>
-            <button onclick="window.open('./Chess','_blank')">Chess prototype</button>
-            <button onclick="window.open('./morse','blank')">Morse code translator</button>
+
+<head>
+    <title>Web Projects</title>
+    <link rel="stylesheet" href="./main.css">
+    <link rel="icon" href="./icon.png">
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div class="stickyMenuWrapper">
+        <div class="menu">
+            <h6>Menu<button></button></h6>
+            <a href="#title" class="menuItem">General info</a>
+            <div class="menuItem menu closed">
+                <h6><a href="#web">Web Projects</a><button></button></h6>
+                <a class="menuItem" href="#chess">Chess game</a>
+                <a class="menuItem" href="#drawing">Drawing website</a>
+            </div>
+            <div class="menuItem menu closed">
+                <h6><a href="#tools">Web Tools<button></button></a></h6>
+                <a class="menuItem" href="#morse">Morse translator</a>
+                <a class="menuItem" href="#color-picker"></a>
+            </div>
         </div>
-    </body>
+    </div>
+    <h1 id="title"></h1>
+    <div id="container">
+        <h4>I'm a developer from France, trying to code some stuff. My projects are a bit versatile, and I don't really have a planned schedule regarding what i wanna create in the future, so don't come here expecting a continuity in what i develop.<br>Also, my code is pretty awful<br><br>
+            As of today, some of my works are only in French, but I'll make an English version as soon as i can. Hope you'll enjoy what i've done so far !<br><br>
+            You can see the github repository containing the code for this website right <a href="https://github.com/mizkyosia/mizkyosia.github.io" style="text-decoration: underline 2px white;" target="_blank">here</a>.
+        </h4>
+        <br>
+        <h2 id="web">Web Projects</h2>
+        <div class="displayer">
+            <div id="chess" class="project">
+                <h3>Chess game & PGN tools</h3>
+                <div class="links">
+                    <button class="link" onclick="window.open('./Chess')">Play it</button>
+                    <button class="link" onclick="window.open('https:/\/github.io/mizkyosia/mizkyosia.github.io/Chess','_blank')">Code on GitHub</button>
+                </div>
+                <p>
+                    A chess game, featuring a simple .PGN file viewer. 1-player mode broken at the moment, I will fix it
+                    later (eventually)
+                </p>
+            </div>
+            <div id="drawing" class="project">
+                <h3>Drawing website</h3>
+                <div class="links">
+                    <button class="link" onclick="window.open('./drawing')">Start drawing</button>
+                    <button class="link" onclick="window.open('https:/\/github.io/mizkyosia/mizkyosia.github.io/drawing','_blank')">Code on GitHub</button>
+                </div>
+                <p>
+                    A website for drawing things. It'll eventually become a sorta flexible and maybe even useful 
+                </p>
+            </div>
+        </div>
+        <h2 id="tools">Web Tools</h2>
+        <div class="displayer">
+            <div id="morse" class="project">
+                <h3>Morse code translator</h3>
+                <div class="links">
+                    <button class="link" onclick="window.open('./morse')">Use translator</button>
+                    <button class="link" onclick="window.open('https:/\/github.io/mizkyosia/mizkyosia.github.io/morse','_blank')">Code on GitHub</button>
+                </div>
+                <p>
+                    This is just a simple morse language translator. Doesn't like newlines, i'll fix it later on.
+                </p>
+            </div>
+            <div id="color-picker" class="project">
+                <h3>Color picker for web apps</h3>
+                <div class="links">
+                    <button class="link" onclick="window.open('./ColorPicker')">Use translator</button>
+                    <button class="link" onclick="window.open('https:/\/github.io/mizkyosia/ColorPicker','_blank')">Code on GitHub</button>
+                </div>
+                <p>
+                    A colorPicker you can use in your websites if you ever want to. More flexible, intuitive and useful than a basic <code>&lt;input type="color"&gt;</code>. More documentation on it can be found in the source GitHub repository.
+                </p>
+            </div>
+        </div>
+        <h2>Mecania</h2>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    test
+</body>
+
 </html>

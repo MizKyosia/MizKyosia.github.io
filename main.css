@@ -1,5 +1,4 @@
 * {
-	/*transition: all 1s;*/
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -40,17 +39,22 @@ h1
 	margin-bottom: 15px;
 }
 
-h2
-{
-	font-size: 25px;
+h2 {
+	font-size: 1.5rem;
+	text-decoration: underline 3px orangered;
+}
+
+h4 {
+	text-shadow: 1px 1px 5px black;
 	color: orangered;
-	margin: 20px;
 }
 
 a
 {
-	color: white;
-	text-decoration: none;
+	font-weight: bold;
+	margin: 2px;
+	color: inherit;
+	text-decoration: underline 2px;
 }
 
 button.classic
@@ -77,10 +81,129 @@ button.classic:hover
 
 #container
 {
+	transition: all 1s;
 	display: flex;
 	flex-direction: column;
-	opacity: 0;
-	transform: translateY(40px);
+	opacity: 1;
+	pointer-events: all;
+	transform: none;
 	align-items: center;
-	width: 80vw;
+}
+
+#container.hidden {
+	transform: translateY(40px);
+	opacity: 0;
+	height: 0px;
+	overflow: hidden;
+}
+
+button.link {
+	margin: 10px;
+	transition: all .2s;
+	cursor: pointer;
+	width: 200px;
+	border-radius: 10px;
+	height: 50px;
+	font-size: 1rem;
+	background-color: #101010;
+	color: white;
+}
+
+button.link:hover {
+	background-color: #2a2a2b;
+}
+
+.displayer {
+	text-align: center;
+	padding: 10px;
+	width: 200px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.displayer p {
+	color: orangered;
+}
+
+.displayer > .project {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+}
+
+.displayer > .project > .links {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.stickyMenuWrapper {
+	position: fixed;
+	right: 15px;
+	top: 15px;
+	padding-top: 10px;
+	background-color: #101010;
+	border-radius: 15px;
+	z-index: 10;
+}
+
+.menu .menuItem {
+	transition: all .2s;
+	max-width: 500px;
+	max-height: 500px;
+	overflow: hidden !important;
+}
+
+.menu > h6 > button {
+	cursor: pointer;
+	margin: 5px;
+	width: 15px;
+	height: 15px;
+	border: none;
+	background-color: transparent;
+	background-image: url(./Chess/Images/arrow.png);
+	background-size:contain;
+	transform: rotate(-90deg);
+	transition: all .5s;
+}
+
+.menu {
+	transition: all.5s;
+	padding: 0px 10px 10px 10px;
+	display: flex;
+	flex-direction: column;
+	max-height: 100vh;
+	overflow:hidden;
+}
+
+.menu.closed > .menuItem {
+	max-height: 0px;
+	max-width: 0px;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}
+
+.menu > :not(h6) {
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+.menu > h6 {
+	margin-left: 5px;
+	font-size: 1rem;
+	color: orangered;
+}
+
+.menu .menu {
+	margin-left: 0px;
+}
+
+.menu.closed > h6 > button {
+	transform: rotate(90deg);
 }

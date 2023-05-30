@@ -4,13 +4,15 @@
 <head>
     <link rel="stylesheet" href="../main.css">
     <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./colorPicker.css">
     <link rel="icon" href="./Images/transparent-bg.png">
     <script src="./draw.js" type="text/javascript"></script>
+    <script src="/colorPicker.js" type="text/javascript"></script>
     <title>Awsum drawing website ! :D</title>
 </head>
 
 <body>
-    <input id="colorPicker" type="color" oninput="editColor(this.value)">
+    <input id="colorPicker" type="color" oninput="editColor(this.value)" onblur="console.log('pressed')">
     <svg height="40px" width="40px" style="position: absolute;display:none;">
         <circle id="cursor" cx="20" cy="20" r="5" />
     </svg>

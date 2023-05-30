@@ -30,6 +30,7 @@ textarea:focus-visible {
 }
 
 .arrow {
+    border: none;
     margin: 0px;
     padding: 5px;
     background: none;
